@@ -2,11 +2,9 @@
 import Image from "next/image";
 import { Link } from "@/i18n/navigation"; //
 import { useTranslations } from "next-intl";
-import { usePathname } from "next/navigation";
 
 export default function NavBar() {
   const t = useTranslations("nav");
-  const pathname = usePathname();
 
   const navLinks = [
     { href: "/", label: t("home") },
@@ -32,9 +30,7 @@ export default function NavBar() {
             <Link
               key={link.href}
               href={link.href}
-              className={`hover:text-yellow-300 transition ${
-                pathname === link.href ? "underline underline-offset-4" : ""
-              }`}
+              className={`hover:text-yellow-300 transition`}
             >
               {link.label}
             </Link>
