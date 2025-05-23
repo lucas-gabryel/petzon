@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import React from "react";
-import "./globals.css";
+import "../globals.css";
 
-import { NextIntlClientProvider, hasLocale } from 'next-intl';
-import { notFound } from 'next/navigation';
-import { routing } from '@/i18n/routing';
+import { NextIntlClientProvider, hasLocale } from "next-intl";
+import { notFound } from "next/navigation";
+import { routing } from "@/i18n/routing";
 
 export const metadata: Metadata = {
   title: "Petzon | Adotar nunca foi tão fácil",
@@ -13,22 +13,20 @@ export const metadata: Metadata = {
 
 export default async function LocaleLayout({
   children,
-  params
+  params,
 }: {
   children: React.ReactNode;
-  params: Promise<{locale: string}>;
+  params: Promise<{ locale: string }>;
 }) {
-  const {locale} = await params;
+  const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) {
     notFound();
   }
- 
+
   return (
     <html lang={locale}>
       <body>
-        <NextIntlClientProvider>
-          {children}
-        </NextIntlClientProvider>
+        <NextIntlClientProvider>{children}</NextIntlClientProvider>
       </body>
     </html>
   );
