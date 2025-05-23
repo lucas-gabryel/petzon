@@ -19,7 +19,17 @@
     }
   },
   "gallery": {
-    "previewTitle": "Conoce algunas de nuestras mascotas"
+    "previewTitle": "Conoce a algunas de nuestras mascotas",
+    "cards": {
+      "um": {
+        "title": "Bolinha",
+        "text": "¡Soy alegre, cariñoso y me encanta jugar! Si buscas un compañero fiel y divertido, soy el perrito ideal. 🐾"
+      },
+      "dois": {
+        "title": "Mia",
+        "text": "Dulce y encantadora. Amo un regazo cálido y ronronearé solo por estar cerca de ti. 💕"
+      }
+    }
   },
   "nav": {
     "home": "Inicio",

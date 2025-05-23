@@ -19,7 +19,17 @@
     }
   },
   "gallery": {
-    "previewTitle": "Meet some of our pets"
+    "previewTitle": "Meet some of our pets",
+    "cards": {
+      "um": {
+        "title": "Bolinha",
+        "text": "I'm cheerful, affectionate, and love to play! If you're looking for a loyal and fun companion, I'm the ideal pup. 🐾"
+      },
+      "dois": {
+        "title": "Mia",
+        "text": "Sweet and full of charm. I love a warm lap and will purr just by being near you. 💕"
+      }
+    }
   },
   "nav": {
     "home": "Home",

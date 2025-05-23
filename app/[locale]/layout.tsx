@@ -5,8 +5,7 @@ import "../globals.css";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
-import NavBar from "../components/NavBar";
-import Footer from "../components/Footer";
+import ClientLayout from "./ClientLayout";
 
 export const metadata: Metadata = {
   title: "Petzon | Adotar nunca foi tão fácil",
@@ -29,9 +28,7 @@ export default async function LocaleLayout({
     <html lang={locale}>
       <body className="min-h-screen flex flex-col">
         <NextIntlClientProvider>
-          <NavBar />
-          {children}
-          <Footer />
+          <ClientLayout>{children}</ClientLayout>
         </NextIntlClientProvider>
       </body>
     </html>
