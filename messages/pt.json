@@ -2,5 +2,9 @@
     "Home": {
         "title": "Olá, mundo!",
         "about": "loren"
+    },
+    "Gallery": {
+        "title": "Galeria da adoção!",
+        "about": "Sita a vontade para explorar e encontrar seu próximo amiguinho(a)"
     }
 }
