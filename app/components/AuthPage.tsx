@@ -6,7 +6,7 @@ export default function AuthPage() {
 
   return (
     <main className="flex-1 bg-white flex items-center justify-center px-4 py-10">
-      <div className="border-2 grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-5xl bg-white shadow-xl rounded-2xl p-8">
+      <div className="border-2 border-purple-200 grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-5xl bg-white shadow-xl rounded-2xl p-8">
         <div className="flex flex-col justify-center space-y-6">
           <h2 className="text-2xl font-bold text-purple-700 text-center">
             {t("auth.loginTab")}
@@ -18,7 +18,7 @@ export default function AuthPage() {
               </label>
               <input
                 type="email"
-                className="mt-1 w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                className="mt-1 w-full border border-purple-200 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
               />
             </div>
             <div>
@@ -27,7 +27,7 @@ export default function AuthPage() {
               </label>
               <input
                 type="password"
-                className="mt-1 w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                className="mt-1 w-full border border-purple-200 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
               />
             </div>
             <button
@@ -39,7 +39,7 @@ export default function AuthPage() {
           </form>
         </div>
 
-        <div className="flex flex-col justify-center space-y-6 border-t pt-8 md:border-t-0 md:border-l md:pt-0 md:pl-8 border-gray-200">
+        <div className="flex flex-col justify-center space-y-6 border-t pt-8 md:border-t-0 md:border-l md:pt-0 md:pl-8 border-purple-200">
           <h2 className="text-2xl font-bold text-purple-700 text-center">
             {t("auth.registerTab")}
           </h2>
@@ -50,7 +50,7 @@ export default function AuthPage() {
               </label>
               <input
                 type="text"
-                className="mt-1 w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                className="mt-1 w-full border border-purple-200 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
               />
             </div>
             <div>
@@ -59,7 +59,7 @@ export default function AuthPage() {
               </label>
               <input
                 type="email"
-                className="mt-1 w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                className="mt-1 w-full border border-purple-200 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
               />
             </div>
             <div>
@@ -68,7 +68,7 @@ export default function AuthPage() {
               </label>
               <input
                 type="password"
-                className="mt-1 w-full border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                className="mt-1 w-full border border-purple-200 rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500"
               />
             </div>
             <button
