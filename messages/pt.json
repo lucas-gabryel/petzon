@@ -19,7 +19,17 @@
     }
   },
   "gallery": {
-    "previewTitle": "Conheça alguns dos nossos pets"
+    "previewTitle": "Conheça alguns dos nossos pets",
+    "cards": {
+      "um": {
+        "title": "Bolinha",
+        "text": "Sou alegre, carinhoso e adoro brincar! Se você procura um companheiro fiel e divertido, sou o cãozinho ideal. 🐾"
+      },
+      "dois": {
+        "title": "Mia",
+        "text": "Gatinha doce e cheia de charme. Amo um colo quentinho e vou ronronar só por estar perto de você. 💕"
+      }
+    }
   },
   "nav": {
     "home": "Início",
