@@ -2,6 +2,11 @@ import React from "react";
 import { useTranslations } from "next-intl";
 import Typography from "@mui/material/Typography";
 import MultiActionAreaCard from "../../components/multiActionAreaCard/MultiActionAreaCard";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: 'Galeria'
+};
 
 export default function Gallery() {
   const t = useTranslations("gallery");
