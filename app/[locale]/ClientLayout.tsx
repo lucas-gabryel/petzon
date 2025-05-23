@@ -15,7 +15,7 @@ export default function ClientLayout({
       <div className="flex flex-col min-h-screen">
         <Provider store={store}>
           <NavBar />
-          <main>{children}</main>
+          {children}
           <Footer />
         </Provider>
       </div>
