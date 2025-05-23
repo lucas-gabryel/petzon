@@ -37,5 +37,14 @@
     "desc2": "View details and talk to caregivers or shelters.",
     "title3": "Adopt with love",
     "desc3": "Complete the adoption and welcome a new family member!"
+  },
+  "auth": {
+    "loginTab": "Login",
+    "registerTab": "Sign Up",
+    "name": "Name",
+    "email": "Email",
+    "password": "Password",
+    "loginBtn": "Login",
+    "registerBtn": "Create Account"
   }
 }
