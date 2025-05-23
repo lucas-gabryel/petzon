@@ -37,5 +37,14 @@
     "desc2": "Mira los detalles y habla con tutores u ONGs.",
     "title3": "Adopta con amor",
     "desc3": "Finaliza la adopción y recibe a un nuevo miembro en tu familia."
+  },
+  "auth": {
+    "loginTab": "Iniciar sesión",
+    "registerTab": "Registrarse",
+    "name": "Nombre",
+    "email": "Correo",
+    "password": "Contraseña",
+    "loginBtn": "Iniciar sesión",
+    "registerBtn": "Crear cuenta"
   }
 }
