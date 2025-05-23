@@ -1,6 +1,41 @@
 {
-    "Home": {
-        "title": "Hello, world!",
-        "about": "loren"
+  "hero": {
+    "title": "Adopt, don't shop!",
+    "subtitle": "Find your new best friend today"
+  },
+  "cta": {
+    "title": "Ready to change a life?",
+    "button": "View available pets"
+  },
+  "benefits": {
+    "title": "You guarantee...",
+    "safeAdoption": {
+      "title": "Safe Adoption",
+      "text": "All pets are verified, vaccinated, and ready for a new home"
+    },
+    "support": {
+      "title": "Post-Adoption Support",
+      "text": "We help you throughout and after the adoption process"
     }
+  },
+  "gallery": {
+    "previewTitle": "Meet some of our pets"
+  },
+  "nav": {
+    "home": "Home",
+    "login": "Login",
+    "gallery": "Gallery"
+  },
+  "footer": {
+    "rights": "All rights reserved"
+  },
+  "how": {
+    "title": "How it works?",
+    "title1": "Find a pet",
+    "desc1": "Search for available pets near you.",
+    "title2": "Connect and meet",
+    "desc2": "View details and talk to caregivers or shelters.",
+    "title3": "Adopt with love",
+    "desc3": "Complete the adoption and welcome a new family member!"
+  }
 }

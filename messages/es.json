@@ -1,6 +1,41 @@
 {
-    "Home": {
-        "title": "¡Hola Mundo!",
-        "about": "loren"
+  "hero": {
+    "title": "¡Adopta, no compres!",
+    "subtitle": "Encuentra a tu nuevo mejor amigo hoy"
+  },
+  "cta": {
+    "title": "¿Listo para cambiar una vida?",
+    "button": "Ver mascotas disponibles"
+  },
+  "benefits": {
+    "title": "Tú garantizas...",
+    "safeAdoption": {
+      "title": "Adopción Segura",
+      "text": "Todas las mascotas están verificadas, vacunadas y listas para un nuevo hogar"
+    },
+    "support": {
+      "title": "Apoyo Post-Adopción",
+      "text": "Te ayudamos durante y después del proceso de adopción"
     }
+  },
+  "gallery": {
+    "previewTitle": "Conoce algunas de nuestras mascotas"
+  },
+  "nav": {
+    "home": "Inicio",
+    "login": "Iniciar sesión",
+    "gallery": "Galería"
+  },
+  "footer": {
+    "rights": "Todos los derechos reservados"
+  },
+  "how": {
+    "title": "¿Cómo funciona?",
+    "title1": "Encuentra una mascota",
+    "desc1": "Busca mascotas disponibles cerca de ti.",
+    "title2": "Conecta y conoce",
+    "desc2": "Mira los detalles y habla con tutores u ONGs.",
+    "title3": "Adopta con amor",
+    "desc3": "Finaliza la adopción y recibe a un nuevo miembro en tu familia."
+  }
 }
