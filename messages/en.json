@@ -20,21 +20,15 @@
   },
   "gallery": {
     "previewTitle": "Meet some of our pets",
-    "cards": {
-      "um": {
-        "title": "Bolinha",
-        "text": "I'm cheerful, affectionate, and love to play! If you're looking for a loyal and fun companion, I'm the ideal pup. 🐾"
-      },
-      "dois": {
-        "title": "Mia",
-        "text": "Sweet and full of charm. I love a warm lap and will purr just by being near you. 💕"
-      }
-    }
+    "catDescription": "An adorable kitten looking for a home. It's playful, affectionate, and ready to fill your house with joy and lots of purrs.",
+    "dogDescription": "A loyal and energetic companion. Loves walks, playing, and is eager to find a family to call its own."
   },
   "nav": {
     "home": "Home",
     "login": "Login",
-    "gallery": "Gallery"
+    "gallery": "Gallery",
+    "cats": "Cats",
+    "dogs": "Dogs"
   },
   "footer": {
     "rights": "All rights reserved"

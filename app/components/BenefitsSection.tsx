@@ -16,7 +16,7 @@ export default function BenefitsSection() {
   ];
 
   return (
-    <section className="py-16 px-6 bg-white flex-grow">
+    <section className="py-16 px-6 bg-purple-50 flex-grow">
       <h2 className="text-3xl font-bold text-center text-purple-800 mb-10">
         {t("title")}
       </h2>

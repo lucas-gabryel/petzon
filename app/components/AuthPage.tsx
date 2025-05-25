@@ -5,7 +5,7 @@ export default function AuthPage() {
   const t = useTranslations();
 
   return (
-    <main className="flex-1 bg-white flex items-center justify-center px-4 py-10">
+    <main className="flex-1 bg-purple-50 flex items-center justify-center px-4 py-10">
       <div className="border-2 border-purple-200 grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-5xl bg-white shadow-xl rounded-2xl p-8">
         <div className="flex flex-col justify-center space-y-6">
           <h2 className="text-2xl font-bold text-purple-700 text-center">

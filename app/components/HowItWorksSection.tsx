@@ -24,13 +24,13 @@ export default function HowItWorksSection() {
   ];
 
   return (
-    <section className="bg-white text-purple-800 py-16 px-6">
+    <section className="bg-purple-50 text-purple-800 py-16 px-6">
       <h2 className="text-3xl font-bold text-center mb-10">{t("how.title")}</h2>
       <div className="max-w-6xl mx-auto grid gap-8 md:grid-cols-3 text-center">
         {steps.map((step, index) => (
           <div
             key={index}
-            className="bg-purple-100 p-6 rounded-xl shadow-md hover:shadow-lg transition"
+            className="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition"
           >
             <div className="flex justify-center text-purple-700">
               {step.icon}
