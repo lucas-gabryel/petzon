@@ -26,6 +26,7 @@
   "nav": {
     "home": "Home",
     "login": "Login",
+    "about": "About",
     "gallery": "Gallery",
     "cats": "Cats",
     "dogs": "Dogs"
@@ -57,5 +58,16 @@
     "errorEmailInvalid": "Invalid email address",
     "errorPasswordRequired": "Password is required",
     "errorPasswordMinLength": "Password must be at least 6 characters"
+  },
+  "aboutPage": {
+    "title": "About Petzon",
+    "missionTitle": "Our Mission",
+    "missionText": "At Petzon, our mission is to connect hearts and homes. We believe that every pet deserves a second chance and a loving home. Our platform facilitates responsible adoption, uniting pets in need with people willing to offer care, affection, and a lifelong family.",
+    "visionTitle": "Our Vision",
+    "visionText": "We dream of a world where all pets are loved, respected, and have a safe home. We want to be the bridge that transforms the lives of pets and people, promoting awareness about the importance of adoption and animal welfare.",
+    "creatorsTitle": "Who We Are",
+    "creatorsText": "Petzon was conceived and passionately developed by Lucas Gabryel and Hugo Santos, two technology enthusiasts and animal lovers dedicated to making a difference in pets' lives.",
+    "getInvolvedTitle": "Get Involved!",
+    "getInvolvedText": "If you're looking for a new family member or want to help a pet in need, you're in the right place. Explore our gallery, meet our adorable candidates, and get ready to have your life transformed by the unconditional love of a pet."
   }
 }

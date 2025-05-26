@@ -26,6 +26,7 @@
   "nav": {
     "home": "Inicio",
     "login": "Iniciar sesión",
+    "about": "Sobre Nosotros",
     "gallery": "Galería",
     "cats": "Gatos",
     "dogs": "Perros"
@@ -57,5 +58,16 @@
     "errorEmailInvalid": "Dirección de correo inválida",
     "errorPasswordRequired": "Contraseña es obligatoria",
     "errorPasswordMinLength": "Contraseña debe tener al menos 6 caracteres"
+  },
+  "aboutPage": {
+    "title": "Sobre Petzon",
+    "missionTitle": "Nuestra Misión",
+    "missionText": "En Petzon, nuestra misión es conectar corazones y hogares. Creemos que cada mascota merece una segunda oportunidad y un hogar amoroso. Nuestra plataforma facilita la adopción responsable, uniendo a mascotas necesitadas con personas dispuestas a ofrecer cuidado, cariño y una familia para toda la vida.",
+    "visionTitle": "Nuestra Visión",
+    "visionText": "Soñamos con un mundo donde todas las mascotas sean amadas, respetadas y tengan un hogar seguro. Queremos ser el puente que transforma la vida de las mascotas y las personas, promoviendo la conciencia sobre la importancia de la adopción y el bienestar animal.",
+    "creatorsTitle": "Quiénes Somos",
+    "creatorsText": "Petzon fue concebido y desarrollado con pasión por Lucas Gabryel y Hugo Santos, dos entusiastas de la tecnología y amantes de los animales, dedicados a marcar la diferencia en la vida de las mascotas.",
+    "getInvolvedTitle": "¡Participa!",
+    "getInvolvedText": "Si estás buscando un nuevo miembro para la familia o quieres ayudar a una mascota necesitada, estás en el lugar correcto. Explora nuestra galería, conoce a nuestros adorables candidatos y prepárate para que tu vida sea transformada por el amor incondicional de una mascota."
   }
 }

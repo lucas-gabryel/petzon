@@ -9,6 +9,7 @@ export default function NavBar() {
   const navLinks = [
     { href: "/", label: t("home") },
     { href: "/gallery", label: t("gallery") },
+    { href: "/about", label: t("about") }, // Novo link adicionado
     { href: "/login", label: t("login") },
   ];
 
@@ -17,11 +18,11 @@ export default function NavBar() {
       <nav className="max-w-7xl mx-auto flex justify-between items-center px-6 py-4">
         <Link href="/" className="flex items-center">
           <Image
-            src="/logo.png"
+            src="/logo.png" // Certifique-se que este logo existe na pasta /public
             alt="Logo do Petzon"
             width={40}
             height={40}
-            className="rounded-full"
+            className="rounded-full mr-2" // Adicionada margem
           />
           <span className="text-2xl font-bold text-yellow-400">Petzon</span>
         </Link>
