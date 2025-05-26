@@ -70,5 +70,19 @@
     "creatorsText": "Petzon foi idealizado e desenvolvido com paixão por Lucas Gabryel e Hugo Santos, dois entusiastas da tecnologia e amantes dos animais, dedicados a fazer a diferença na vida dos pets.",
     "getInvolvedTitle": "Faça Parte!",
     "getInvolvedText": "Se você está procurando um novo membro para a família ou quer ajudar um pet necessitado, você está no lugar certo. Explore nossa galeria, conheça nossos adoráveis candidatos e prepare-se para ter sua vida transformada pelo amor incondicional de um pet."
+  },
+
+  "testimonials": {
+    "title": "Histórias que Aquecem o Coração",
+    "testimonial1": {
+      "quote": "Encontrar o Tobby no Petzon foi a melhor coisa que nos aconteceu. O processo foi simples e transparente. Hoje, nossa casa é muito mais feliz com ele!",
+      "name": "Ana e João",
+      "pet": "Tobby, o Cãozinho"
+    },
+    "testimonial2": {
+      "quote": "Eu tinha receio de adotar online, mas o Petzon tornou tudo seguro. Adotei a Luna há 3 meses e ela é a gatinha mais carinhosa do mundo. Recomendo a todos!",
+      "name": "Mariana Silva",
+      "pet": "Luna, a Gatinha"
+    }
   }
 }
