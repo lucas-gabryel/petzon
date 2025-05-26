@@ -1,6 +1,5 @@
 import React from "react";
 import HeroSection from "@/app/components/HeroSection";
-import BenefitsSection from "@/app/components/BenefitsSection";
 import HowItWorksSection from "@/app/components/HowItWorksSection";
 import TestimonialsSection from "@/app/components/TestimonialsSection";
 
