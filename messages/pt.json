@@ -20,21 +20,15 @@
   },
   "gallery": {
     "previewTitle": "Conheça alguns dos nossos pets",
-    "cards": {
-      "um": {
-        "title": "Bolinha",
-        "text": "Sou alegre, carinhoso e adoro brincar! Se você procura um companheiro fiel e divertido, sou o cãozinho ideal. 🐾"
-      },
-      "dois": {
-        "title": "Mia",
-        "text": "Gatinha doce e cheia de charme. Amo um colo quentinho e vou ronronar só por estar perto de você. 💕"
-      }
-    }
+    "catDescription": "Um adorável gatinho procurando um lar. É brincalhão, carinhoso e está pronto para encher sua casa de alegria e muitos ronronares.",
+    "dogDescription": "Um companheiro leal e cheio de energia. Adora passeios, brincadeiras e está ansioso para encontrar uma família para chamar de sua."
   },
   "nav": {
     "home": "Início",
     "login": "Login",
-    "gallery": "Galeria"
+    "gallery": "Galeria",
+    "cats": "Gatos",
+    "dogs": "Cachorros"
   },
   "footer": {
     "rights": "Todos os direitos reservados"
@@ -56,6 +50,13 @@
     "email": "E-mail",
     "password": "Senha",
     "loginBtn": "Entrar",
-    "registerBtn": "Criar conta"
+    "registerBtn": "Criar conta",
+    "submittingLogin": "Entrando...",
+    "submittingRegister": "Registrando...",
+    "errorNameRequired": "Nome é obrigatório",
+    "errorEmailRequired": "E-mail é obrigatório",
+    "errorEmailInvalid": "Endereço de e-mail inválido",
+    "errorPasswordRequired": "Senha é obrigatória",
+    "errorPasswordMinLength": "Senha deve ter pelo menos 6 caracteres"
   }
 }

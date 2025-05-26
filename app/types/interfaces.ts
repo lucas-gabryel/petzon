@@ -4,8 +4,9 @@ export interface MultiActionAreaCardProps {
   alt: string;
   title: string;
   description: string;
+  detailLink: string; // Nova prop
 }
 
 export interface LikeStateProps {
-    likes: Record<string, boolean>;
+  likes: Record<string, boolean>;
 }
