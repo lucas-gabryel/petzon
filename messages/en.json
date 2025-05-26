@@ -49,6 +49,13 @@
     "email": "Email",
     "password": "Password",
     "loginBtn": "Login",
-    "registerBtn": "Create Account"
+    "registerBtn": "Create Account",
+    "submittingLogin": "Logging in...",
+    "submittingRegister": "Signing up...",
+    "errorNameRequired": "Name is required",
+    "errorEmailRequired": "Email is required",
+    "errorEmailInvalid": "Invalid email address",
+    "errorPasswordRequired": "Password is required",
+    "errorPasswordMinLength": "Password must be at least 6 characters"
   }
 }

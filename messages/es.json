@@ -49,6 +49,13 @@
     "email": "Correo",
     "password": "Contraseña",
     "loginBtn": "Iniciar sesión",
-    "registerBtn": "Crear cuenta"
+    "registerBtn": "Crear cuenta",
+    "submittingLogin": "Iniciando sesión...",
+    "submittingRegister": "Registrando...",
+    "errorNameRequired": "Nombre es obligatorio",
+    "errorEmailRequired": "Correo es obligatorio",
+    "errorEmailInvalid": "Dirección de correo inválida",
+    "errorPasswordRequired": "Contraseña es obligatoria",
+    "errorPasswordMinLength": "Contraseña debe tener al menos 6 caracteres"
   }
 }

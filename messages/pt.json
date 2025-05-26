@@ -50,6 +50,13 @@
     "email": "E-mail",
     "password": "Senha",
     "loginBtn": "Entrar",
-    "registerBtn": "Criar conta"
+    "registerBtn": "Criar conta",
+    "submittingLogin": "Entrando...",
+    "submittingRegister": "Registrando...",
+    "errorNameRequired": "Nome é obrigatório",
+    "errorEmailRequired": "E-mail é obrigatório",
+    "errorEmailInvalid": "Endereço de e-mail inválido",
+    "errorPasswordRequired": "Senha é obrigatória",
+    "errorPasswordMinLength": "Senha deve ter pelo menos 6 caracteres"
   }
 }
