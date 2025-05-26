@@ -1,6 +1,7 @@
 "use client";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation"; //
 
 export default function HeroSection() {
   const t = useTranslations();
@@ -16,7 +17,7 @@ export default function HeroSection() {
             {t("hero.subtitle")}
           </p>
           <button className="bg-yellow-400 text-purple-800 font-semibold px-6 py-3 rounded-full shadow-md hover:bg-yellow-500 transition">
-            {t("cta.button")}
+            <Link href={"/gallery"}>{t("cta.button")}</Link>
           </button>
         </div>
 

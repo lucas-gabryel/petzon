@@ -14,6 +14,7 @@ export default function NavBar() {
   const navLinks = [
     { href: "/", label: t("home") },
     { href: "/gallery", label: t("gallery") },
+    { href: "/about", label: t("about") }, // Novo link adicionado
     { href: "/login", label: t("login") },
   ];
 
@@ -60,6 +61,7 @@ export default function NavBar() {
         <div className="hidden md:flex gap-6 items-center">
           {renderLinks()}
           <LanguageSwitcher />
+
         </div>
 
         {/* Mobile Menu */}
