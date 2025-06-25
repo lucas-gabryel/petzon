@@ -2,63 +2,19 @@
 
 import React, { useState } from "react";
 import { useTranslations } from "next-intl";
-import MultiActionAreaCard from "../../components/multiActionAreaCard/MultiActionAreaCard"; //
-import {
-  useGetCatListQuery,
-  useGetDogListQuery,
-} from "@/app/store/api/petsApi";
+import MultiActionAreaCard from "../../components/multiActionAreaCard/MultiActionAreaCard";
+import { useGetPetsQuery } from "@/app/store/api/petsApi"; // Hook atualizado
+import type { Pet } from "@/app/store/api/petsApi"; // Importa a nova interface
 
-type PetType = "cats" | "dogs";
-
-const mockCatNames = [
-  "Frajola",
-  "Mia",
-  "Bolinha",
-  "Simba",
-  "Luna",
-  "Oliver",
-  "Nina",
-  "Tom",
-  "Garfield",
-  "Salem",
-  "Cleo",
-  "Felix",
-];
-const mockDogNames = [
-  "Rex",
-  "Buddy",
-  "Max",
-  "Bella",
-  "Charlie",
-  "Lucy",
-  "Cooper",
-  "Daisy",
-  "Milo",
-  "Sadie",
-  "Rocky",
-  "Lola",
-];
+type PetType = "gato" | "cachorro"; // Tipos que vamos passar para a API
 
 export default function Gallery() {
   const t = useTranslations("gallery");
   const navT = useTranslations("nav");
-  const [selectedPetType, setSelectedPetType] = useState<PetType>("cats");
+  const [selectedPetType, setSelectedPetType] = useState<PetType>("gato");
 
-  const {
-    data: catData,
-    error: catError,
-    isLoading: catIsLoading,
-  } = useGetCatListQuery(12, { skip: selectedPetType !== "cats" });
-
-  const {
-    data: dogData,
-    error: dogError,
-    isLoading: dogIsLoading,
-  } = useGetDogListQuery(12, { skip: selectedPetType !== "dogs" });
-
-  const isLoading = selectedPetType === "cats" ? catIsLoading : dogIsLoading;
-  const error = selectedPetType === "cats" ? catError : dogError;
-  const pets = selectedPetType === "cats" ? catData : dogData;
+  // Usando o novo hook unificado. Passamos o tipo selecionado como argumento.
+  const { data: pets, error, isLoading } = useGetPetsQuery(selectedPetType);
 
   const renderPetCards = () => {
     if (!pets || pets.length === 0) {
@@ -68,38 +24,29 @@ export default function Gallery() {
             className="bg-blue-100 border border-blue-400 text-blue-700 px-4 py-3 rounded relative w-full sm:w-auto text-center"
             role="alert"
           >
-            Nenhum {selectedPetType === "cats" ? "gatinho" : "cachorrinho"}{" "}
+            Nenhum {selectedPetType === "gato" ? "gatinho" : "cachorrinho"}{" "}
             encontrado no momento.
           </div>
         </div>
       );
     }
-    const descriptionText =
-      selectedPetType === "cats" ? t("catDescription") : t("dogDescription");
 
-    return pets.map((pet, index) => {
-      const breedInfo =
-        pet.breeds && pet.breeds.length > 0 ? pet.breeds[0] : null;
+    // Mapeando os dados da nossa API para os props do Card
+    return pets.map((pet: Pet) => {
+      // O backend serve a imagem em um caminho relativo. Precisamos adicionar a base da URL.
+      const imageUrl = `http://localhost:8080${pet.urlFoto}`;
 
-      const titleText =
-        breedInfo?.name ||
-        (selectedPetType === "cats"
-          ? mockCatNames[index % mockCatNames.length]
-          : mockDogNames[index % mockDogNames.length]);
-      const altText = titleText;
-
-      const detailLink = `/gallery/${
-        selectedPetType === "cats" ? "cat" : "dog"
-      }/${pet.id}`;
+      // Ajustando o link de detalhe
+      const detailLink = `/gallery/${pet.tipo.toLowerCase()}/${pet.id}`;
 
       return (
         <div key={pet.id} className="flex justify-center">
           <MultiActionAreaCard
-            id={pet.id}
-            image={pet.url}
-            alt={altText}
-            title={titleText}
-            description={breedInfo?.temperament || descriptionText}
+            id={String(pet.id)}
+            image={imageUrl}
+            alt={pet.nome}
+            title={pet.nome}
+            description={pet.descricao}
             detailLink={detailLink}
           />
         </div>
@@ -122,9 +69,9 @@ export default function Gallery() {
           </h1>
           <div className="flex flex-col sm:flex-row sm:gap-2 mt-4 sm:mt-0 w-full sm:w-auto">
             <button
-              onClick={() => setSelectedPetType("cats")}
+              onClick={() => setSelectedPetType("gato")}
               className={`${baseButtonClass} ${
-                selectedPetType === "cats"
+                selectedPetType === "gato"
                   ? activeButtonClass
                   : inactiveButtonClass
               } w-full sm:w-auto mb-2 sm:mb-0`}
@@ -132,9 +79,9 @@ export default function Gallery() {
               {navT("cats")}
             </button>
             <button
-              onClick={() => setSelectedPetType("dogs")}
+              onClick={() => setSelectedPetType("cachorro")}
               className={`${baseButtonClass} ${
-                selectedPetType === "dogs"
+                selectedPetType === "cachorro"
                   ? activeButtonClass
                   : inactiveButtonClass
               } w-full sm:w-auto`}
@@ -155,7 +102,7 @@ export default function Gallery() {
               className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative w-full sm:w-auto text-center"
               role="alert"
             >
-              Falha ao buscar os pets. Tente novamente mais tarde.
+              Falha ao buscar os pets. Verifique se o backend está rodando.
             </div>
           </div>
         )}
