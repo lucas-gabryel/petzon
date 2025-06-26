@@ -21,7 +21,7 @@ export interface Pet {
   urlFoto: string;
 }
 
-interface PetCadastroDto {
+export interface PetCadastroDto {
   tipo: "CACHORRO" | "GATO";
   nome: string;
   temperamento: string;
