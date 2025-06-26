@@ -3,18 +3,41 @@
 import React, { useState } from "react";
 import { useTranslations } from "next-intl";
 import MultiActionAreaCard from "../../components/multiActionAreaCard/MultiActionAreaCard";
-import { useGetPetsQuery } from "@/app/store/api/petsApi"; // Hook atualizado
-import type { Pet } from "@/app/store/api/petsApi"; // Importa a nova interface
+import { useGetPetsQuery } from "@/app/store/api/petsApi";
+import type { Pet } from "@/app/store/api/petsApi";
 
-type PetType = "gato" | "cachorro"; // Tipos que vamos passar para a API
+type PetType = "gato" | "cachorro";
 
 export default function Gallery() {
   const t = useTranslations("gallery");
   const navT = useTranslations("nav");
   const [selectedPetType, setSelectedPetType] = useState<PetType>("gato");
+  const [page, setPage] = useState(0); // Estado para controlar a página atual
 
-  // Usando o novo hook unificado. Passamos o tipo selecionado como argumento.
-  const { data: pets, error, isLoading } = useGetPetsQuery(selectedPetType);
+  const { data, error, isLoading } = useGetPetsQuery({
+    tipo: selectedPetType,
+    page: page,
+    size: 8, // Quantos pets por página
+  });
+
+  const pets = data?.content; // Os pets agora estão dentro da propriedade 'content'
+  const totalPages = data?.totalPages || 0;
+
+  const handlePreviousPage = () => {
+    setPage((prevPage) => Math.max(prevPage - 1, 0));
+  };
+
+  const handleNextPage = () => {
+    setPage((prevPage) =>
+      prevPage + 1 < totalPages ? prevPage + 1 : prevPage
+    );
+  };
+
+  const baseButtonClass =
+    "px-4 py-2 rounded-md font-semibold transition-colors duration-150 ease-in-out text-sm sm:text-base shadow-sm";
+  const activeButtonClass = "bg-purple-700 text-white hover:bg-purple-800";
+  const inactiveButtonClass =
+    "bg-white text-purple-700 border border-purple-700 hover:bg-purple-100";
 
   const renderPetCards = () => {
     if (!pets || pets.length === 0) {
@@ -31,12 +54,8 @@ export default function Gallery() {
       );
     }
 
-    // Mapeando os dados da nossa API para os props do Card
     return pets.map((pet: Pet) => {
-      // O backend serve a imagem em um caminho relativo. Precisamos adicionar a base da URL.
       const imageUrl = `http://localhost:8080${pet.urlFoto}`;
-
-      // Ajustando o link de detalhe
       const detailLink = `/gallery/${pet.tipo.toLowerCase()}/${pet.id}`;
 
       return (
@@ -54,12 +73,6 @@ export default function Gallery() {
     });
   };
 
-  const baseButtonClass =
-    "px-4 py-2 rounded-md font-semibold transition-colors duration-150 ease-in-out text-sm sm:text-base shadow-sm";
-  const activeButtonClass = "bg-purple-700 text-white hover:bg-purple-800";
-  const inactiveButtonClass =
-    "bg-white text-purple-700 border border-purple-700 hover:bg-purple-100";
-
   return (
     <main className="flex-1 bg-purple-50 py-8 px-4 md:px-6">
       <div className="max-w-7xl mx-auto">
@@ -69,7 +82,10 @@ export default function Gallery() {
           </h1>
           <div className="flex flex-col sm:flex-row sm:gap-2 mt-4 sm:mt-0 w-full sm:w-auto">
             <button
-              onClick={() => setSelectedPetType("gato")}
+              onClick={() => {
+                setSelectedPetType("gato");
+                setPage(0); // Reseta a página ao trocar de tipo
+              }}
               className={`${baseButtonClass} ${
                 selectedPetType === "gato"
                   ? activeButtonClass
@@ -79,7 +95,10 @@ export default function Gallery() {
               {navT("cats")}
             </button>
             <button
-              onClick={() => setSelectedPetType("cachorro")}
+              onClick={() => {
+                setSelectedPetType("cachorro");
+                setPage(0); // Reseta a página ao trocar de tipo
+              }}
               className={`${baseButtonClass} ${
                 selectedPetType === "cachorro"
                   ? activeButtonClass
@@ -106,10 +125,35 @@ export default function Gallery() {
             </div>
           </div>
         )}
+
         {!isLoading && !error && (
-          <div className="flex flex-col items-center sm:grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:items-stretch gap-6">
-            {renderPetCards()}
-          </div>
+          <>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+              {renderPetCards()}
+            </div>
+
+            {data && data.totalPages > 1 && (
+              <div className="flex justify-center items-center mt-10 gap-4">
+                <button
+                  onClick={handlePreviousPage}
+                  disabled={page === 0}
+                  className="px-4 py-2 bg-purple-700 text-white rounded-md transition hover:bg-purple-800 disabled:bg-gray-400 disabled:cursor-not-allowed"
+                >
+                  Anterior
+                </button>
+                <span className="text-purple-800 font-semibold">
+                  Página {page + 1} de {totalPages}
+                </span>
+                <button
+                  onClick={handleNextPage}
+                  disabled={page + 1 >= totalPages}
+                  className="px-4 py-2 bg-purple-700 text-white rounded-md transition hover:bg-purple-800 disabled:bg-gray-400 disabled:cursor-not-allowed"
+                >
+                  Próxima
+                </button>
+              </div>
+            )}
+          </>
         )}
       </div>
     </main>

@@ -2,6 +2,10 @@
 import { useTranslations } from "next-intl";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useState } from "react";
+import { useLoginMutation, useRegisterMutation } from "@/app/store/api/petsApi"; // Hooks da API
+import { useAppDispatch } from "@/app/hooks/hooks"; // Hook do dispatch
+import { setCredentials } from "./multiActionAreaCard/authSlice"; // Action de login
+import { useRouter } from "@/i18n/navigation"; // Router do next-intl
 
 interface LoginFormInputs {
   emailLogin: string;
@@ -17,11 +21,17 @@ interface RegisterFormInputs {
 export default function AuthPage() {
   const t = useTranslations("auth");
   const [activeTab, setActiveTab] = useState<"login" | "register">("login");
+  const router = useRouter();
+
+  // Hooks da nossa API
+  const [login, { isLoading: isLoggingIn }] = useLoginMutation();
+  const [register, { isLoading: isRegistering }] = useRegisterMutation();
+  const dispatch = useAppDispatch();
 
   const {
     register: registerLogin,
     handleSubmit: handleSubmitLogin,
-    formState: { errors: errorsLogin, isSubmitting: isSubmittingLogin },
+    formState: { errors: errorsLogin },
   } = useForm<LoginFormInputs>({
     mode: "onBlur",
   });
@@ -29,21 +39,41 @@ export default function AuthPage() {
   const {
     register: registerRegister,
     handleSubmit: handleSubmitRegister,
-    formState: { errors: errorsRegister, isSubmitting: isSubmittingRegister },
+    formState: { errors: errorsRegister },
   } = useForm<RegisterFormInputs>({
     mode: "onBlur",
   });
 
   const onLoginSubmit: SubmitHandler<LoginFormInputs> = async (data) => {
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    console.log("Dados de Login:", data);
-    alert(`Login com: ${data.emailLogin}`);
+    try {
+      const { token } = await login({
+        email: data.emailLogin,
+        senha: data.passwordLogin,
+      }).unwrap();
+      dispatch(setCredentials({ token }));
+      alert("Login realizado com sucesso!");
+      router.push("/"); // Redireciona para a home após o login
+    } catch (err) {
+      console.error("Falha no login:", err);
+      alert("Email ou senha inválidos.");
+    }
   };
 
   const onRegisterSubmit: SubmitHandler<RegisterFormInputs> = async (data) => {
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    console.log("Dados de Cadastro:", data);
-    alert(`Cadastro de: ${data.nameRegister} com email ${data.emailRegister}`);
+    try {
+      await register({
+        nome: data.nameRegister,
+        email: data.emailRegister,
+        senha: data.passwordRegister,
+      }).unwrap();
+      alert("Cadastro realizado com sucesso! Por favor, faça o login.");
+      setActiveTab("login"); // Muda para a aba de login após o cadastro
+    } catch (err) {
+      console.error("Falha no cadastro:", err);
+      alert(
+        "Não foi possível realizar o cadastro. Verifique os dados ou tente outro email."
+      );
+    }
   };
 
   const inputClass =
@@ -138,9 +168,9 @@ export default function AuthPage() {
             <button
               type="submit"
               className={buttonClass}
-              disabled={isSubmittingLogin}
+              disabled={isLoggingIn}
             >
-              {isSubmittingLogin ? t("submittingLogin") : t("loginBtn")}
+              {isLoggingIn ? t("submittingLogin") : t("loginBtn")}
             </button>
           </form>
         )}
@@ -230,11 +260,9 @@ export default function AuthPage() {
             <button
               type="submit"
               className={buttonClass}
-              disabled={isSubmittingRegister}
+              disabled={isRegistering}
             >
-              {isSubmittingRegister
-                ? t("submittingRegister")
-                : t("registerBtn")}
+              {isRegistering ? t("submittingRegister") : t("registerBtn")}
             </button>
           </form>
         )}

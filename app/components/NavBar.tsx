@@ -1,76 +1,157 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react"; // Importamos useRef e useEffect
 import Image from "next/image";
-import { Link } from "@/i18n/navigation";
+import { Link, useRouter } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 import LanguageSwitcher from "./languageSwitcher/LanguageSwitcher";
-import { FiMenu, FiX } from "react-icons/fi";
+import { FiMenu, FiX, FiLogOut, FiUser } from "react-icons/fi";
+import { useAppSelector, useAppDispatch } from "@/app/hooks/hooks";
+import { logout } from "./multiActionAreaCard/authSlice";
+import { useGetUsuarioLogadoQuery, petsApi } from "@/app/store/api/petsApi";
 
 export default function NavBar() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null); // Referência para o container do dropdown
   const t = useTranslations("nav");
+  const dispatch = useAppDispatch();
+  const router = useRouter();
+
+  const { isAuthenticated } = useAppSelector((state) => state.auth);
+  const { data: usuarioLogado } = useGetUsuarioLogadoQuery(undefined, {
+    skip: !isAuthenticated,
+  });
+
+  // Hook para fechar o dropdown ao clicar fora
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setDropdownOpen(false);
+      }
+    }
+    // Adiciona o listener quando o componente monta
+    document.addEventListener("mousedown", handleClickOutside);
+    // Remove o listener quando o componente desmonta para evitar memory leaks
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [dropdownRef]);
+
+  const handleLogout = () => {
+    dispatch(logout());
+    dispatch(petsApi.util.resetApiState());
+    setDropdownOpen(false);
+    setMenuOpen(false);
+    router.push("/");
+  };
 
   const navLinks = [
     { href: "/", label: t("home") },
     { href: "/gallery", label: t("gallery") },
-    { href: "/about", label: t("about") }, // Novo link adicionado
-    { href: "/login", label: t("login") },
+    { href: "/about", label: t("about") },
   ];
 
   const renderLinks = () => (
-    <div className="flex flex-col md:flex-row gap-4 md:gap-6 items-center">
+    <>
       {navLinks.map((link) => (
         <Link
           key={link.href}
           href={link.href}
           className="hover:text-yellow-300 transition hover:border-b"
+          onClick={() => setMenuOpen(false)}
         >
           {link.label}
         </Link>
       ))}
-    </div>
+    </>
   );
 
-  return (
-    <header className="bg-purple-700 text-white shadow-md">
-      <nav className="max-w-7xl mx-auto flex justify-between items-center px-6 py-4">
-        <div className="flex flex-row justify-between">
-          {/* Logo */}
-          <Link href="/" className="flex items-center">
-            <Image
-              src="/logo.png"
-              alt="Logo do Petzon"
-              width={40}
-              height={40}
-              className="rounded-full"
-            />
-            <span className="text-2xl font-bold text-yellow-400">Petzon</span>
-          </Link>
-
-          {/* Button for mobile menu */}
+  const renderAuthSection = () => {
+    if (isAuthenticated && usuarioLogado) {
+      // Adicionamos a ref ao container e removemos o onMouseLeave
+      return (
+        <div className="relative" ref={dropdownRef}>
           <button
-            className="md:hidden text-white"
-            onClick={() => setMenuOpen(!menuOpen)}
+            onClick={() => setDropdownOpen((prev) => !prev)}
+            className="flex items-center gap-2 cursor-pointer hover:text-yellow-300"
           >
-            {menuOpen ? <FiX size={28} /> : <FiMenu size={28} />}
+            <FiUser size={20} />
+            <span className="font-medium">{usuarioLogado.nome}</span>
           </button>
-        </div>
 
-        {/* Desktop Menu */}
-        <div className="hidden md:flex gap-6 items-center">
-          {renderLinks()}
-          <LanguageSwitcher />
-
-        </div>
-
-        {/* Mobile Menu */}
-        {menuOpen && (
-          <div className="flex flex-col gap-4 px-8 pt-4 md:hidden">
-            {renderLinks()}
-            <div className="flex gap-6 mt-4">
-              <LanguageSwitcher />
+          {/* Menu Dropdown */}
+          {dropdownOpen && (
+            <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 text-black">
+              <Link
+                href="/perfil"
+                className="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-100"
+                onClick={() => setDropdownOpen(false)}
+              >
+                Meu Perfil
+              </Link>
+              <button
+                onClick={handleLogout}
+                className="w-full text-left flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50"
+              >
+                <FiLogOut />
+                <span>Logout</span>
+              </button>
             </div>
+          )}
+        </div>
+      );
+    }
+    // Se não estiver logado, mostra o botão de Login
+    return (
+      <Link
+        href="/login"
+        className="hover:text-yellow-300 transition hover:border-b"
+        onClick={() => setMenuOpen(false)}
+      >
+        {t("login")}
+      </Link>
+    );
+  };
+
+  return (
+    <header className="bg-purple-700 text-white shadow-md sticky top-0 z-50">
+      <nav className="max-w-7xl mx-auto flex flex-wrap justify-between items-center px-6 py-4">
+        <Link href="/" className="flex items-center gap-2">
+          <Image
+            src="/logo.png"
+            alt="Logo do Petzon"
+            width={40}
+            height={40}
+            className="rounded-full"
+          />
+          <span className="text-2xl font-bold text-yellow-400">Petzon</span>
+        </Link>
+
+        <button
+          className="md:hidden text-white"
+          onClick={() => setMenuOpen(!menuOpen)}
+          aria-label="Abrir menu"
+        >
+          {menuOpen ? <FiX size={28} /> : <FiMenu size={28} />}
+        </button>
+
+        {/* Menu Desktop */}
+        <div className="hidden md:flex items-center gap-6">
+          {renderLinks()}
+          {renderAuthSection()}
+          <LanguageSwitcher />
+        </div>
+
+        {/* Menu Mobile */}
+        {menuOpen && (
+          <div className="w-full md:hidden flex flex-col items-center gap-6 pt-6 pb-4">
+            {renderLinks()}
+            {renderAuthSection()}
+            <LanguageSwitcher />
           </div>
         )}
       </nav>
