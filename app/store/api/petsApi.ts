@@ -21,6 +21,15 @@ export interface Pet {
   urlFoto: string;
 }
 
+interface PetCadastroDto {
+  tipo: "CACHORRO" | "GATO";
+  nome: string;
+  temperamento: string;
+  descricao: string;
+  idade: number;
+  urlFoto: string;
+}
+
 // Interfaces para os DTOs de login e cadastro
 interface LoginRequest {
   email: string;
@@ -105,6 +114,38 @@ export const petsApi = createApi({
       query: (id) => `pets/${id}`,
       providesTags: (_result, _error, id) => [{ type: "Pet", id }],
     }),
+
+    addPet: builder.mutation<Pet, PetCadastroDto>({
+      query: (newPet) => ({
+        url: "pets",
+        method: "POST",
+        body: newPet,
+      }),
+      // Invalida a lista de pets para forçar um refetch automático
+      invalidatesTags: [{ type: "Pet", id: "LIST" }],
+    }),
+
+    // NOVA MUTATION PARA ATUALIZAR PET
+    updatePet: builder.mutation<Pet, { id: number; pet: PetCadastroDto }>({
+      query: ({ id, pet }) => ({
+        url: `pets/${id}`,
+        method: "PUT",
+        body: pet,
+      }),
+      invalidatesTags: (_result, _error, { id }) => [
+        { type: "Pet", id },
+        { type: "Pet", id: "LIST" },
+      ],
+    }),
+
+    // NOVA MUTATION PARA DELETAR PET
+    deletePet: builder.mutation<{ success: boolean; id: number }, number>({
+      query: (id) => ({
+        url: `pets/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: [{ type: "Pet", id: "LIST" }],
+    }),
   }),
 });
 
@@ -115,4 +156,7 @@ export const {
   useGetPetsQuery,
   useGetPetByIdQuery,
   useGetUsuarioLogadoQuery,
+  useAddPetMutation,
+  useUpdatePetMutation,
+  useDeletePetMutation,
 } = petsApi;

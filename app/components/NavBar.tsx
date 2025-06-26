@@ -87,12 +87,26 @@ export default function NavBar() {
           {dropdownOpen && (
             <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 text-black">
               <Link
-                href="/perfil"
+                href="/perfil" // Link para uma futura página de perfil
                 className="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-100"
                 onClick={() => setDropdownOpen(false)}
               >
                 Meu Perfil
               </Link>
+
+              {/* *** NOVO TRECHO ADICIONADO AQUI *** */}
+              {/* Verifica se o array de cargos inclui ROLE_ADMIN */}
+              {usuarioLogado.cargos.includes("ROLE_ADMIN") && (
+                <Link
+                  href="/admin/gerenciar-pets"
+                  className="block px-4 py-2 text-sm text-purple-700 font-bold hover:bg-purple-100"
+                  onClick={() => setDropdownOpen(false)}
+                >
+                  Gerenciar Pets
+                </Link>
+              )}
+              {/* *** FIM DO NOVO TRECHO *** */}
+
               <button
                 onClick={handleLogout}
                 className="w-full text-left flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50"
