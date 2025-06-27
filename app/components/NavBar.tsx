@@ -97,13 +97,22 @@ export default function NavBar() {
               {/* *** NOVO TRECHO ADICIONADO AQUI *** */}
               {/* Verifica se o array de cargos inclui ROLE_ADMIN */}
               {usuarioLogado.cargos.includes("ROLE_ADMIN") && (
-                <Link
-                  href="/admin/gerenciar-pets"
-                  className="block px-4 py-2 text-sm text-purple-700 font-bold hover:bg-purple-100"
-                  onClick={() => setDropdownOpen(false)}
-                >
-                  Gerenciar Pets
-                </Link>
+                <>
+                  <Link
+                    href="/admin/gerenciar-pets"
+                    className="block px-4 py-2 text-sm text-purple-700 font-bold hover:bg-purple-100"
+                    onClick={() => setDropdownOpen(false)}
+                  >
+                    Gerenciar Pets
+                  </Link>
+                  <Link
+                    href="/admin/chat-dashboard"
+                    className="block px-4 py-2 text-sm text-purple-700 font-bold hover:bg-purple-100"
+                    onClick={() => setDropdownOpen(false)}
+                  >
+                    Chat Admin
+                  </Link>
+                </>
               )}
               {/* *** FIM DO NOVO TRECHO *** */}
 

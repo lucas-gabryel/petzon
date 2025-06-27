@@ -25,6 +25,20 @@ const baseNextConfig: NextConfig = {
       },
     ],
   },
+  webpack: (config, { isServer }) => {
+    // A regra a seguir aplica-se apenas ao build do cliente (navegador)
+    if (!isServer) {
+      // O 'fallback' diz ao Webpack o que fazer quando não encontra um módulo.
+      // Ao definir como 'false', ele simplesmente o ignora.
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        net: false, // Ignora o módulo 'net'
+        tls: false, // É uma boa prática ignorar o 'tls' também, pois pode causar problemas semelhantes
+      };
+    }
+
+    return config;
+  },
 };
 
 const withNextIntl = createNextIntlPlugin();

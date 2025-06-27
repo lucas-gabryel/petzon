@@ -30,6 +30,15 @@ export interface PetCadastroDto {
   urlFoto: string;
 }
 
+export interface ChatMessage {
+  id: number;
+  content: string;
+  sender: { idUsuario: number; nome: string };
+  recipient: { idUsuario: number; nome: string };
+  timestamp: string;
+  conversationId: string;
+}
+
 // Interfaces para os DTOs de login e cadastro
 interface LoginRequest {
   email: string;
@@ -53,6 +62,14 @@ export interface UsuarioLogado {
   cargos: string[];
 }
 
+export interface ConversationSummary {
+  conversationId: string;
+  petNome: string;
+  usuarioNome: string;
+  ultimaMensagem: string;
+  timestamp: string;
+}
+
 export const petsApi = createApi({
   reducerPath: "petsApi",
   // Modifica a baseQuery para incluir o token dinamicamente
@@ -66,7 +83,7 @@ export const petsApi = createApi({
       return headers;
     },
   }),
-  tagTypes: ["Pet"],
+  tagTypes: ["Pet", "Chat", "ChatConversations"],
   endpoints: (builder) => ({
     // Adicionar Mutations de Autenticação
     login: builder.mutation<TokenResponse, LoginRequest>({
@@ -85,6 +102,14 @@ export const petsApi = createApi({
     }),
     getUsuarioLogado: builder.query<UsuarioLogado, void>({
       query: () => "auth/usuario-logado",
+    }),
+    getChatHistory: builder.query<ChatMessage[], string>({
+      query: (conversationId) => `chat/history/${conversationId}`,
+      providesTags: ["Chat"], // Adicione uma tag para o chat
+    }),
+    getAdminConversations: builder.query<ConversationSummary[], void>({
+      query: () => `admin/chat/conversations`,
+      providesTags: ["ChatConversations"],
     }),
     // Atualizar a query de getPets para lidar com paginação
     getPets: builder.query<
@@ -156,7 +181,9 @@ export const {
   useGetPetsQuery,
   useGetPetByIdQuery,
   useGetUsuarioLogadoQuery,
+  useGetChatHistoryQuery,
   useAddPetMutation,
   useUpdatePetMutation,
   useDeletePetMutation,
+  useGetAdminConversationsQuery,
 } = petsApi;
