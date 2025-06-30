@@ -6,25 +6,33 @@ import {
   useGetPetByIdQuery,
   useGetUsuarioLogadoQuery,
 } from "@/app/store/api/petsApi";
-import { useAppSelector } from "@/app/hooks/hooks";
 import Image from "next/image";
+import { useAppSelector } from "@/app/hooks/hooks";
 import PrivateChatWindow from "@/app/components/chat/PrivateChatWindow";
+import { FiMessageSquare } from "react-icons/fi";
 
 export default function PetDetailPage() {
   const params = useParams();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const petType = params.petType as "cat" | "dog";
   const petId = params.petId as string;
 
   const [isChatOpen, setIsChatOpen] = useState(false);
+
   const { isAuthenticated } = useAppSelector((state) => state.auth);
   const { data: currentUser } = useGetUsuarioLogadoQuery(undefined, {
     skip: !isAuthenticated,
   });
-
   const {
     data: pet,
     error,
     isLoading,
   } = useGetPetByIdQuery(petId, { skip: !petId });
+
+  // O ID da conversa é uma combinação do ID do usuário logado e do ID do pet
+  const conversationId = currentUser
+    ? `${currentUser.idUsuario}-${petId}`
+    : null;
 
   if (isLoading) {
     return (
@@ -49,82 +57,80 @@ export default function PetDetailPage() {
 
   const imageUrl = `http://localhost:8080${pet.urlFoto}`;
 
-  // *** MUDANÇA PRINCIPAL AQUI ***
-  // Monta o ID da conversa apenas se o usuário estiver logado
-  const conversationId = currentUser
-    ? `${currentUser.idUsuario}-${pet.id}`
-    : "";
-
   return (
-    <main className="flex-1 bg-purple-50 py-8 px-4 md:px-6">
-      <div className="bg-white max-w-4xl mx-auto overflow-hidden rounded-lg shadow-xl">
-        <div className="relative w-full h-72 md:h-96">
-          <Image
-            src={imageUrl}
-            alt={pet.nome}
-            layout="fill"
-            className="object-cover"
-            priority
-          />
-        </div>
-        <div className="p-6 md:p-8">
-          <h1 className="text-3xl md:text-4xl font-bold text-purple-950 mb-4">
-            {pet.nome}
-          </h1>
+    // O container principal precisa ser relativo para o posicionamento do chat
+    <div className="relative min-h-screen">
+      <main className="flex-1 bg-purple-50 py-8 px-4 md:px-6">
+        <div className="bg-white max-w-4xl mx-auto overflow-hidden rounded-lg shadow-xl">
+          <div className="relative w-full h-72 md:h-96">
+            <Image
+              src={imageUrl}
+              alt={pet.nome}
+              layout="fill"
+              className="object-cover"
+              priority
+            />
+          </div>
+          <div className="p-6 md:p-8">
+            <h1 className="text-3xl md:text-4xl font-bold text-purple-950 mb-4">
+              {pet.nome}
+            </h1>
 
-          {/* ... (resto dos detalhes do pet, como temperamento, descrição, etc.) ... */}
-          <div className="mb-6">
-            <h2 className="text-xl font-semibold text-purple-700 mb-2">
-              Temperamento:
-            </h2>
-            <div className="flex flex-wrap gap-2">
-              {pet.temperamento.split(" e ").map((temp) => (
-                <span
-                  key={temp}
-                  className="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm font-medium"
-                >
-                  {temp}
-                </span>
-              ))}
+            <div className="mb-6">
+              <h2 className="text-xl font-semibold text-purple-700 mb-2">
+                Temperamento:
+              </h2>
+              <div className="flex flex-wrap gap-2">
+                {pet.temperamento.split(" e ").map((temp) => (
+                  <span
+                    key={temp}
+                    className="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm font-medium"
+                  >
+                    {temp}
+                  </span>
+                ))}
+              </div>
             </div>
-          </div>
 
-          <div className="mb-6">
-            <h2 className="text-xl font-semibold text-purple-700 mb-1">
-              Descrição:
-            </h2>
-            <p className="text-gray-700 leading-relaxed">{pet.descricao}</p>
-          </div>
+            <div className="mb-6">
+              <h2 className="text-xl font-semibold text-purple-700 mb-1">
+                Descrição:
+              </h2>
+              <p className="text-gray-700 leading-relaxed">{pet.descricao}</p>
+            </div>
 
-          <div className="mb-6">
-            <h2 className="text-xl font-semibold text-purple-700 mb-1">
-              Idade:
-            </h2>
-            <p className="text-gray-700">{pet.idade} anos</p>
-          </div>
+            <div className="mb-6">
+              <h2 className="text-xl font-semibold text-purple-700 mb-1">
+                Idade:
+              </h2>
+              <p className="text-gray-700">{pet.idade} anos</p>
+            </div>
 
-          <button
-            onClick={() => setIsChatOpen(true)}
-            disabled={!isAuthenticated}
-            className="w-full mt-6 bg-green-600 text-white font-bold py-3 rounded-lg hover:bg-green-700 transition disabled:bg-gray-400 disabled:cursor-not-allowed"
-          >
-            {isAuthenticated
-              ? "Iniciar Chat com Responsável"
-              : "Faça login para iniciar o chat"}
-          </button>
+            <button
+              onClick={() => setIsChatOpen(true)}
+              disabled={!isAuthenticated}
+              className="w-full mt-6 bg-green-600 text-white font-bold py-3 rounded-lg hover:bg-green-700 transition flex items-center justify-center gap-3 disabled:bg-gray-400 disabled:cursor-not-allowed"
+            >
+              <FiMessageSquare size={20} />
+              {isAuthenticated
+                ? "Iniciar Chat com Responsável"
+                : "Faça login para iniciar o chat"}
+            </button>
+          </div>
         </div>
-      </div>
+      </main>
 
-      {/* Container para posicionar o chat como um modal pop-up */}
-      {isChatOpen && (
+      {/* Renderiza a janela de chat como um pop-up sobre a página */}
+      {isChatOpen && conversationId && (
         <div className="fixed bottom-4 right-4 z-50">
           <PrivateChatWindow
             conversationId={conversationId}
-            petId={petId}
+            petId={petId as string}
+            chatPartnerName="Admin" // Na visão do usuário, o parceiro é sempre o Admin
             onClose={() => setIsChatOpen(false)}
           />
         </div>
       )}
-    </main>
+    </div>
   );
 }

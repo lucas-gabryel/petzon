@@ -1,13 +1,14 @@
 "use client";
 
-import React, { useEffect, useState } from "react"; // Adicionado useState
+import React, { useEffect, useState } from "react";
 import { useRouter } from "@/i18n/navigation";
 import {
   useGetUsuarioLogadoQuery,
   useGetAdminConversationsQuery,
-} from "@/app/store/api/petsApi"; // Importar o novo hook
+} from "@/app/store/api/petsApi";
 import { useAppSelector } from "@/app/hooks/hooks";
-import type { ConversationSummary } from "@/app/store/api/petsApi"; // Importar a nova interface
+import type { ConversationSummary } from "@/app/store/api/petsApi";
+import PrivateChatWindow from "@/app/components/chat/PrivateChatWindow"; // Importe o componente
 
 export default function AdminChatDashboard() {
   const router = useRouter();
@@ -17,17 +18,14 @@ export default function AdminChatDashboard() {
       skip: !isAuthenticated,
     });
 
-  // *** INÍCIO DAS NOVAS ALTERAÇÕES ***
-
-  // 1. Hook para buscar as conversas
   const { data: conversations, isLoading: isLoadingConversations } =
-    useGetAdminConversationsQuery();
+    useGetAdminConversationsQuery(undefined, {
+      // Adicionando polling para atualizar a lista de conversas a cada 30 segundos
+      pollingInterval: 30000,
+    });
 
-  // 2. Estado para guardar qual conversa está selecionada
   const [selectedConversation, setSelectedConversation] =
     useState<ConversationSummary | null>(null);
-
-  // *** FIM DAS NOVAS ALTERAÇÕES ***
 
   useEffect(() => {
     if (
@@ -38,8 +36,9 @@ export default function AdminChatDashboard() {
     }
   }, [isAuthenticated, usuarioLogado, isLoadingUser, router]);
 
-  // Agora o loading depende de ambos os hooks
-  if (isLoadingUser || isLoadingConversations) {
+  const isLoading = isLoadingUser || isLoadingConversations;
+
+  if (isLoading) {
     return (
       <div className="flex justify-center items-center h-screen">
         <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-purple-700"></div>
@@ -51,19 +50,18 @@ export default function AdminChatDashboard() {
     return (
       <main className="flex h-[calc(100vh-68px)]">
         {/* Coluna da Lista de Conversas (Esquerda) */}
-        <div className="w-1/3 border-r border-gray-200 overflow-y-auto">
+        <div className="w-1/3 border-r border-gray-200 overflow-y-auto bg-white">
           <div className="p-4 font-bold text-lg border-b bg-gray-50 sticky top-0">
             Conversas Ativas
           </div>
 
-          {/* 3. Mapeando e renderizando a lista de conversas */}
           {conversations?.map((convo) => (
             <div
               key={convo.conversationId}
               onClick={() => setSelectedConversation(convo)}
               className={`p-4 border-b cursor-pointer hover:bg-purple-50 ${
                 selectedConversation?.conversationId === convo.conversationId
-                  ? "bg-purple-100"
+                  ? "bg-purple-100 border-l-4 border-l-purple-600"
                   : ""
               }`}
             >
@@ -82,28 +80,19 @@ export default function AdminChatDashboard() {
         </div>
 
         {/* Área da Janela de Chat (Direita) */}
-        <div className="w-2/3 flex items-center justify-center bg-gray-100 p-4">
-          {/* 4. Mostra os detalhes da conversa selecionada (temporário) */}
+        <div className="w-2/3 flex items-center justify-center bg-gray-100">
           {selectedConversation ? (
-            <div className="text-center">
-              <h2 className="text-2xl font-bold">Conversa Selecionada</h2>
-              <p>
-                <strong>Com:</strong> {selectedConversation.usuarioNome}
-              </p>
-              <p>
-                <strong>Sobre:</strong> {selectedConversation.petNome}
-              </p>
-              <p>
-                <strong>ID da Conversa:</strong>{" "}
-                {selectedConversation.conversationId}
-              </p>
-              <div className="mt-8 p-4 bg-white rounded-lg">
-                A janela de chat aparecerá aqui no próximo passo.
-              </div>
-            </div>
+            // *** JANELA DE CHAT INTEGRADA AQUI ***
+            <PrivateChatWindow
+              conversationId={selectedConversation.conversationId}
+              petId={selectedConversation.conversationId.split("-")[1]} // Extrai o petId
+              chatPartnerName={selectedConversation.usuarioNome}
+              onClose={() => setSelectedConversation(null)}
+            />
           ) : (
-            <div className="text-gray-500">
-              Selecione uma conversa para começar.
+            <div className="text-center text-gray-500">
+              <p className="text-lg">Bem-vindo ao seu Dashboard de Chat.</p>
+              <p>Selecione uma conversa na lista à esquerda para começar.</p>
             </div>
           )}
         </div>

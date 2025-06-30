@@ -12,44 +12,56 @@ import type { ChatMessage } from "@/app/store/api/petsApi";
 import { FiX } from "react-icons/fi";
 
 interface PrivateChatWindowProps {
-  petId: string;
-  conversationId: string; // Nova prop
+  conversationId: string;
+  petId: string; // <-- ADICIONE ESTA LINHA
+  chatPartnerName: string;
   onClose: () => void;
 }
 
 export default function PrivateChatWindow({
-  petId,
+  conversationId,
+  chatPartnerName,
   onClose,
 }: PrivateChatWindowProps) {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
-  // Estado para saber com quem estamos falando (o outro usuário na conversa)
   const [chatPartnerId, setChatPartnerId] = useState<number | null>(null);
+
   const stompClient = useRef<Client | null>(null);
   const messagesEndRef = useRef<null | HTMLDivElement>(null);
 
   const token = useAppSelector((state) => state.auth.token);
   const { data: currentUser } = useGetUsuarioLogadoQuery();
-  const { data: history = [] } = useGetChatHistoryQuery(petId);
+  const { data: history = [], refetch: refetchHistory } =
+    useGetChatHistoryQuery(conversationId);
 
-  // Popula o chat com o histórico e define o parceiro de chat
+  // Efeito para carregar o histórico e definir o parceiro de chat
   useEffect(() => {
+    // Força a busca do histórico mais recente para esta conversa
+    refetchHistory();
     setMessages(history);
-    if (history.length > 0 && currentUser) {
-      // Encontra a primeira mensagem que não foi enviada pelo usuário atual
-      const otherUserMessage = history.find(
-        (msg) => msg.sender.idUsuario !== currentUser.idUsuario
-      );
-      if (otherUserMessage) {
-        setChatPartnerId(otherUserMessage.sender.idUsuario);
-      }
-    }
-  }, [history, currentUser]);
 
+    if (history.length > 0 && currentUser) {
+      const firstMessage = history[0];
+      const partnerId =
+        firstMessage.sender.idUsuario === currentUser.idUsuario
+          ? firstMessage.recipient.idUsuario
+          : firstMessage.sender.idUsuario;
+      setChatPartnerId(partnerId);
+    } else {
+      // Se não tem histórico, o parceiro é o outro ID na conversationId
+      const ids = conversationId.split("-").map(Number);
+      const partner = ids.find((id) => id !== currentUser?.idUsuario);
+      setChatPartnerId(partner || null);
+    }
+  }, [conversationId, history, currentUser, refetchHistory]);
+
+  // Efeito para rolar para a última mensagem
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
+  // Efeito de conexão WebSocket
   useEffect(() => {
     if (!token || !currentUser) return;
 
@@ -64,7 +76,7 @@ export default function PrivateChatWindow({
         `/user/${currentUser.email}/queue/messages`,
         (message: IMessage) => {
           const receivedMessage: ChatMessage = JSON.parse(message.body);
-          if (receivedMessage.conversationId === petId) {
+          if (receivedMessage.conversationId === conversationId) {
             setMessages((prev) => [...prev, receivedMessage]);
           }
         }
@@ -77,54 +89,42 @@ export default function PrivateChatWindow({
     return () => {
       client.deactivate();
     };
-  }, [token, currentUser, petId]);
+  }, [token, currentUser, conversationId]);
 
   const sendMessage = () => {
     if (input.trim() && stompClient.current?.active && currentUser) {
-      // *** LÓGICA DO DESTINATÁRIO CORRIGIDA AQUI ***
-      let recipientId;
-      const isAdmin = currentUser.cargos.includes("ROLE_ADMIN");
-
-      if (isAdmin) {
-        // Se eu sou admin, envio para o parceiro de chat. Se não houver, envio para o criador do chat (fallback).
-        recipientId =
-          chatPartnerId ||
-          (history.length > 0 ? history[0].sender.idUsuario : null);
-      } else {
-        // Se eu sou um usuário normal, envio sempre para o admin (ID 1).
-        recipientId = 1;
-      }
-
-      if (!recipientId) {
-        alert("Não foi possível determinar o destinatário.");
+      // O ID do destinatário é sempre o do parceiro de chat
+      if (!chatPartnerId) {
+        alert("Não foi possível identificar o destinatário da conversa.");
         return;
       }
 
-      const chatMessage = {
-        recipientId: recipientId,
+      const chatMessagePayload = {
+        recipientId: chatPartnerId,
         content: input,
       };
 
       stompClient.current.publish({
-        destination: `/app/chat/${petId}/sendMessage`,
-        body: JSON.stringify(chatMessage),
+        destination: `/app/chat/${conversationId}/sendMessage`,
+        body: JSON.stringify(chatMessagePayload),
       });
       setInput("");
     }
   };
 
   return (
-    <div className="fixed bottom-4 right-4 w-96 h-[500px] bg-white rounded-lg shadow-xl flex flex-col border border-gray-200 z-50">
-      <div className="bg-purple-700 text-white p-3 flex justify-between items-center rounded-t-lg">
-        <h3 className="font-bold">Chat de Adoção</h3>
+    // O container agora é flexível para preencher o espaço que receber
+    <div className="w-full h-full bg-white flex flex-col shadow-lg">
+      <div className="bg-purple-800 text-white p-4 flex justify-between items-center">
+        <h3 className="font-bold text-lg">Conversa com {chatPartnerName}</h3>
         <button onClick={onClose} className="hover:text-yellow-300">
-          <FiX size={20} />
+          <FiX size={24} />
         </button>
       </div>
-      <div className="flex-1 p-4 overflow-y-auto bg-gray-50">
-        {messages.map((msg) => (
+      <div className="flex-1 p-4 overflow-y-auto bg-gray-100">
+        {messages.map((msg, index) => (
           <div
-            key={msg.id}
+            key={index}
             className={`flex mb-3 ${
               msg.sender.idUsuario === currentUser?.idUsuario
                 ? "justify-end"
@@ -132,10 +132,10 @@ export default function PrivateChatWindow({
             }`}
           >
             <div
-              className={`p-3 rounded-lg max-w-xs ${
+              className={`p-3 rounded-lg max-w-xs shadow ${
                 msg.sender.idUsuario === currentUser?.idUsuario
-                  ? "bg-purple-500 text-white"
-                  : "bg-gray-200 text-gray-800"
+                  ? "bg-purple-600 text-white"
+                  : "bg-white text-gray-800"
               }`}
             >
               <p className="text-sm">{msg.content}</p>
@@ -144,18 +144,18 @@ export default function PrivateChatWindow({
         ))}
         <div ref={messagesEndRef} />
       </div>
-      <div className="p-2 border-t flex">
+      <div className="p-3 border-t bg-white flex">
         <input
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyPress={(e) => e.key === "Enter" && sendMessage()}
-          className="flex-1 p-2 border rounded-l-md focus:outline-none focus:ring-2 focus:ring-purple-500"
+          className="flex-1 p-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-purple-500"
           placeholder="Digite sua mensagem..."
         />
         <button
           onClick={sendMessage}
-          className="bg-purple-700 text-white px-4 py-2 rounded-r-md hover:bg-purple-800"
+          className="bg-purple-700 text-white px-5 py-2 rounded-r-md hover:bg-purple-800 font-semibold"
         >
           Enviar
         </button>
