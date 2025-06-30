@@ -2,17 +2,21 @@
 
 import React, { useEffect } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { Pet, PetCadastroDto } from "@/app/store/api/petsApi";
+import { Pet } from "@/app/store/api/petsApi";
 import {
   useAddPetMutation,
   useUpdatePetMutation,
 } from "@/app/store/api/petsApi";
 import { FiX } from "react-icons/fi";
+import { PetCadastroDto } from "@/app/store/api/petsApi";
 
-// Props que o nosso modal vai receber
+interface PetFormInputs extends PetCadastroDto {
+  imagem: FileList;
+}
+
 interface PetFormModalProps {
-  pet?: Pet | null; // Pet existente para edição (opcional)
-  onClose: () => void; // Função para fechar o modal
+  pet?: Pet | null;
+  onClose: () => void;
 }
 
 export default function PetFormModal({ pet, onClose }: PetFormModalProps) {
@@ -23,7 +27,7 @@ export default function PetFormModal({ pet, onClose }: PetFormModalProps) {
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm<PetCadastroDto>();
+  } = useForm<PetFormInputs>();
 
   const [addPet, { isLoading: isAdding }] = useAddPetMutation();
   const [updatePet, { isLoading: isUpdating }] = useUpdatePetMutation();
@@ -34,11 +38,30 @@ export default function PetFormModal({ pet, onClose }: PetFormModalProps) {
     }
   }, [pet, isEditMode, reset]);
 
-  const onSubmit: SubmitHandler<PetCadastroDto> = async (data) => {
-    const formData = { ...data, idade: Number(data.idade) };
+  const onSubmit: SubmitHandler<PetFormInputs> = async (data) => {
+    const formData = new FormData();
+    const petDto = {
+      tipo: data.tipo,
+      nome: data.nome,
+      temperamento: data.temperamento,
+      descricao: data.descricao,
+      idade: Number(data.idade),
+    };
+    formData.append(
+      "pet",
+      new Blob([JSON.stringify(petDto)], { type: "application/json" })
+    );
+
+    if (data.imagem && data.imagem.length > 0) {
+      formData.append("imagem", data.imagem[0]);
+    } else if (!isEditMode) {
+      alert("Uma imagem é obrigatória para cadastrar um novo pet.");
+      return;
+    }
+
     try {
       if (isEditMode && pet) {
-        await updatePet({ id: pet.id, pet: formData }).unwrap();
+        await updatePet({ id: pet.id, formData }).unwrap();
         alert("Pet atualizado com sucesso!");
       } else {
         await addPet(formData).unwrap();
@@ -47,7 +70,7 @@ export default function PetFormModal({ pet, onClose }: PetFormModalProps) {
       onClose();
     } catch (err) {
       console.error("Falha ao salvar o pet:", err);
-      alert("Ocorreu um erro. Verifique os dados e tente novamente.");
+      alert("Ocorreu um erro.");
     }
   };
 
@@ -57,10 +80,8 @@ export default function PetFormModal({ pet, onClose }: PetFormModalProps) {
   const errorClass = "text-red-500 text-xs mt-1";
 
   return (
-    // Fundo semi-transparente (overlay) - A CORREÇÃO ESTÁ AQUI
-    <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50">
-      {/* Container do Modal */}
-      <div className="bg-white p-8 rounded-lg shadow-2xl w-full max-w-lg relative">
+    <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50 p-4">
+      <div className="bg-white p-8 rounded-lg shadow-2xl w-full max-w-lg relative max-h-full overflow-y-auto">
         <button
           onClick={onClose}
           className="absolute top-4 right-4 text-gray-500 hover:text-gray-800"
@@ -72,6 +93,7 @@ export default function PetFormModal({ pet, onClose }: PetFormModalProps) {
           {isEditMode ? "Editar Pet" : "Adicionar Novo Pet"}
         </h2>
 
+        {/* *** INÍCIO DO FORMULÁRIO COMPLETO *** */}
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div>
             <label className={labelClass} htmlFor="nome">
@@ -151,19 +173,23 @@ export default function PetFormModal({ pet, onClose }: PetFormModalProps) {
           </div>
 
           <div>
-            <label className={labelClass} htmlFor="urlFoto">
-              URL da Foto
+            <label className={labelClass} htmlFor="imagem">
+              Imagem do Pet
             </label>
             <input
-              id="urlFoto"
-              {...register("urlFoto", {
-                required: "URL da foto é obrigatória",
-              })}
-              className={inputClass}
-              placeholder="Ex: /images/pets/nome-do-pet.jpg"
+              id="imagem"
+              type="file"
+              accept="image/png, image/jpeg, image/jpg"
+              {...register("imagem", { required: !isEditMode })} // Obrigatório apenas na criação
+              className="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100 cursor-pointer"
             />
-            {errors.urlFoto && (
-              <p className={errorClass}>{errors.urlFoto.message}</p>
+            {errors.imagem && (
+              <p className={errorClass}>Uma imagem é obrigatória.</p>
+            )}
+            {isEditMode && (
+              <p className="text-xs text-gray-500 mt-1">
+                Deixe em branco para manter a imagem atual.
+              </p>
             )}
           </div>
 
@@ -184,6 +210,7 @@ export default function PetFormModal({ pet, onClose }: PetFormModalProps) {
             </button>
           </div>
         </form>
+        {/* *** FIM DO FORMULÁRIO COMPLETO *** */}
       </div>
     </div>
   );

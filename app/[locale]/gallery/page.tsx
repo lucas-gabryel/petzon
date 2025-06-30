@@ -55,14 +55,18 @@ export default function Gallery() {
     }
 
     return pets.map((pet: Pet) => {
-      const imageUrl = `http://localhost:8080${pet.urlFoto}`;
+      // *** A CORREÇÃO ESTÁ AQUI ***
+      // Removemos a linha que adicionava o prefixo.
+      // Agora usamos a URL completa do S3 que vem da API.
+      const imageUrl = pet.urlFoto;
+
       const detailLink = `/gallery/${pet.tipo.toLowerCase()}/${pet.id}`;
 
       return (
         <div key={pet.id} className="flex justify-center">
           <MultiActionAreaCard
             id={String(pet.id)}
-            image={imageUrl}
+            image={imageUrl} // Passando a URL correta
             alt={pet.nome}
             title={pet.nome}
             description={pet.descricao}

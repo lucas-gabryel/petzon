@@ -55,7 +55,7 @@ export default function PetDetailPage() {
     );
   }
 
-  const imageUrl = `http://localhost:8080${pet.urlFoto}`;
+  const imageUrl = pet.urlFoto;
 
   return (
     // O container principal precisa ser relativo para o posicionamento do chat

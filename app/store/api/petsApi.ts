@@ -140,25 +140,31 @@ export const petsApi = createApi({
       providesTags: (_result, _error, id) => [{ type: "Pet", id }],
     }),
 
-    addPet: builder.mutation<Pet, PetCadastroDto>({
-      query: (newPet) => ({
+    addPet: builder.mutation<Pet, FormData>({
+      // Agora espera receber FormData
+      query: (formData) => ({
         url: "pets",
         method: "POST",
-        body: newPet,
+        body: formData,
+        // Não precisamos definir o Content-Type, o navegador fará isso por nós
+        // ao enviar um FormData.
       }),
-      // Invalida a lista de pets para forçar um refetch automático
       invalidatesTags: [{ type: "Pet", id: "LIST" }],
     }),
 
-    // NOVA MUTATION PARA ATUALIZAR PET
-    updatePet: builder.mutation<Pet, { id: number; pet: PetCadastroDto }>({
-      query: ({ id, pet }) => ({
+    // *** E MUDANÇA AQUI ***
+    updatePet: builder.mutation<
+      Pet,
+      { id: number | string; formData: FormData }
+    >({
+      // Espera um objeto com id e FormData
+      query: ({ id, formData }) => ({
         url: `pets/${id}`,
         method: "PUT",
-        body: pet,
+        body: formData,
       }),
       invalidatesTags: (_result, _error, { id }) => [
-        { type: "Pet", id },
+        { type: "Pet", id: Number(id) },
         { type: "Pet", id: "LIST" },
       ],
     }),

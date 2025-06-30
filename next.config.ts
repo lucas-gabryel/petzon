@@ -13,6 +13,23 @@ const baseNextConfig: NextConfig = {
       },
       {
         protocol: "https",
+        // Substitua pelo hostname correto do seu bucket S3.
+        // O formato é geralmente: <nome-do-bucket>.s3.<regiao>.amazonaws.com
+        hostname: "petzon-images.s3.amazonaws.com",
+        port: "",
+        pathname: "/**", // Permite qualquer imagem dentro do bucket
+      },
+      {
+        protocol: "https",
+        // Substitua pelo hostname correto do seu bucket S3.
+        // O formato é geralmente: <nome-do-bucket>.s3.<regiao>.amazonaws.com
+        hostname: "petzon-images.s3.us-east-2.amazonaws.com",
+        port: "",
+        pathname: "/**", // Permite qualquer imagem dentro do bucket
+      },
+
+      {
+        protocol: "https",
         hostname: "cdn2.thecatapi.com",
         port: "",
         pathname: "/images/**", // Permite qualquer caminho dentro de /images/
