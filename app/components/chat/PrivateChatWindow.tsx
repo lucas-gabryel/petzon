@@ -31,8 +31,13 @@ export default function PrivateChatWindow({
   const messagesEndRef = useRef<null | HTMLDivElement>(null);
   const token = useAppSelector((state) => state.auth.token);
   const { data: currentUser } = useGetUsuarioLogadoQuery();
+
+  // *** A CORREÇÃO ESTÁ AQUI ***
+  // Adicionamos a opção para forçar a busca de dados sempre que a janela é aberta.
   const { data: history = [], isFetching: isHistoryFetching } =
-    useGetChatHistoryQuery(conversationId);
+    useGetChatHistoryQuery(conversationId, {
+      refetchOnMountOrArgChange: true,
+    });
 
   useEffect(() => {
     if (!isHistoryFetching) {
@@ -101,11 +106,9 @@ export default function PrivateChatWindow({
   };
 
   return (
-    // Container principal com layout flex-col e altura total para forçar os filhos a se comportarem
     <div className="w-full h-full bg-white flex flex-col shadow-2xl rounded-xl border border-gray-200">
-      {/* O cabeçalho é condicional */}
       {showHeader && (
-        <div className="bg-purple-700 text-white p-4 flex justify-between items-center rounded-t-xl flex-shrink-0">
+        <div className="bg-purple-700 text-white p-4 flex justify-between items-center rounded-t-xl">
           <h3 className="font-bold text-lg">Conversa com {chatPartnerName}</h3>
           <button
             onClick={onClose}
@@ -115,8 +118,6 @@ export default function PrivateChatWindow({
           </button>
         </div>
       )}
-
-      {/* A área de mensagens agora é flexível e tem a barra de rolagem */}
       <div className="flex-1 p-4 overflow-y-auto bg-purple-50 space-y-4">
         {messages.map((msg) => (
           <div
@@ -140,9 +141,7 @@ export default function PrivateChatWindow({
         ))}
         <div ref={messagesEndRef} />
       </div>
-
-      {/* O input de texto permanece fixo no fundo */}
-      <div className="p-3 border-t bg-white flex items-center gap-2 flex-shrink-0">
+      <div className="p-3 border-t bg-white flex items-center gap-2">
         <input
           type="text"
           value={input}
