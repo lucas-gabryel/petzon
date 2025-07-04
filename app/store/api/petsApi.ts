@@ -100,7 +100,6 @@ export const petsApi = createApi({
   }),
   tagTypes: ["Pet", "Chat", "ChatConversations", "Users"],
   endpoints: (builder) => ({
-    // Adicionar Mutations de Autenticação
     login: builder.mutation<TokenResponse, LoginRequest>({
       query: (credentials) => ({
         url: "auth/login",
@@ -120,13 +119,13 @@ export const petsApi = createApi({
     }),
     getChatHistory: builder.query<ChatMessage[], string>({
       query: (conversationId) => `chat/history/${conversationId}`,
-      providesTags: ["Chat"], // Adicione uma tag para o chat
+      providesTags: ["Chat"],
     }),
     getOngConversations: builder.query<ConversationSummary[], void>({
-      query: () => `ong/chat/conversations`, // Nova URL
+      query: () => `ong/chat/conversations`,
       providesTags: ["ChatConversations"],
     }),
-    // Atualizar a query de getPets para lidar com paginação
+
     getPets: builder.query<
       Page<Pet>,
       { tipo?: string; page: number; size: number }
@@ -178,23 +177,18 @@ export const petsApi = createApi({
     }),
 
     addPet: builder.mutation<Pet, FormData>({
-      // Agora espera receber FormData
       query: (formData) => ({
         url: "pets",
         method: "POST",
         body: formData,
-        // Não precisamos definir o Content-Type, o navegador fará isso por nós
-        // ao enviar um FormData.
       }),
       invalidatesTags: [{ type: "Pet", id: "LIST" }],
     }),
 
-    // *** E MUDANÇA AQUI ***
     updatePet: builder.mutation<
       Pet,
       { id: number | string; formData: FormData }
     >({
-      // Espera um objeto com id e FormData
       query: ({ id, formData }) => ({
         url: `pets/${id}`,
         method: "PUT",
@@ -206,7 +200,6 @@ export const petsApi = createApi({
       ],
     }),
 
-    // NOVA MUTATION PARA DELETAR PET
     deletePet: builder.mutation<{ success: boolean; id: number }, number>({
       query: (id) => ({
         url: `pets/${id}`,
@@ -217,7 +210,6 @@ export const petsApi = createApi({
   }),
 });
 
-// Exportar os novos hooks
 export const {
   useLoginMutation,
   useRegisterMutation,
@@ -228,7 +220,7 @@ export const {
   useAddPetMutation,
   useUpdatePetMutation,
   useDeletePetMutation,
-  useGetOngConversationsQuery, // Hook renomeado
-  useGetUsersQuery, // Novo hook
+  useGetOngConversationsQuery,
+  useGetUsersQuery,
   usePromoteToOngMutation,
 } = petsApi;

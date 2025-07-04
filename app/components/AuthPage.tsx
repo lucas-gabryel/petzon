@@ -2,10 +2,10 @@
 import { useTranslations } from "next-intl";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useState } from "react";
-import { useLoginMutation, useRegisterMutation } from "@/app/store/api/petsApi"; // Hooks da API
-import { useAppDispatch } from "@/app/hooks/hooks"; // Hook do dispatch
-import { setCredentials } from "./multiActionAreaCard/authSlice"; // Action de login
-import { useRouter } from "@/i18n/navigation"; // Router do next-intl
+import { useLoginMutation, useRegisterMutation } from "@/app/store/api/petsApi";
+import { useAppDispatch } from "@/app/hooks/hooks";
+import { setCredentials } from "./multiActionAreaCard/authSlice";
+import { useRouter } from "@/i18n/navigation";
 
 interface LoginFormInputs {
   emailLogin: string;
@@ -52,7 +52,7 @@ export default function AuthPage() {
       }).unwrap();
       dispatch(setCredentials({ token }));
       alert("Login realizado com sucesso!");
-      router.push("/"); // Redireciona para a home após o login
+      router.push("/");
     } catch (err) {
       console.error("Falha no login:", err);
       alert("Email ou senha inválidos.");
@@ -67,7 +67,7 @@ export default function AuthPage() {
         senha: data.passwordRegister,
       }).unwrap();
       alert("Cadastro realizado com sucesso! Por favor, faça o login.");
-      setActiveTab("login"); // Muda para a aba de login após o cadastro
+      setActiveTab("login");
     } catch (err) {
       console.error("Falha no cadastro:", err);
       alert(

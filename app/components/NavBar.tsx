@@ -85,8 +85,6 @@ export default function NavBar() {
           {dropdownOpen && (
             <div className="absolute right-0 mt-2 w-56 bg-white rounded-md shadow-lg py-1 z-50 text-black">
               <Link href="/perfil" /*...*/>Meu Perfil</Link>
-
-              {/* Links para ONG */}
               {isOng && (
                 <>
                   <Link
@@ -106,7 +104,6 @@ export default function NavBar() {
                 </>
               )}
 
-              {/* Links para ADMIN */}
               {isAdmin && (
                 <Link
                   href="/admin/gerenciar-usuarios"
@@ -127,7 +124,7 @@ export default function NavBar() {
         </div>
       );
     }
-    // Se não estiver logado, mostra o botão de Login
+
     return (
       <Link
         href="/login"
@@ -161,14 +158,12 @@ export default function NavBar() {
           {menuOpen ? <FiX size={28} /> : <FiMenu size={28} />}
         </button>
 
-        {/* Menu Desktop */}
         <div className="hidden md:flex items-center gap-6">
           {renderLinks()}
           {renderAuthSection()}
           <LanguageSwitcher />
         </div>
 
-        {/* Menu Mobile */}
         {menuOpen && (
           <div className="w-full md:hidden flex flex-col items-center gap-6 pt-6 pb-4">
             {renderLinks()}

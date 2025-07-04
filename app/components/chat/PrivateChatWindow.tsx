@@ -32,8 +32,6 @@ export default function PrivateChatWindow({
   const token = useAppSelector((state) => state.auth.token);
   const { data: currentUser } = useGetUsuarioLogadoQuery();
 
-  // *** A CORREÇÃO ESTÁ AQUI ***
-  // Adicionamos a opção para forçar a busca de dados sempre que a janela é aberta.
   const { data: history = [], isFetching: isHistoryFetching } =
     useGetChatHistoryQuery(conversationId, {
       refetchOnMountOrArgChange: true,

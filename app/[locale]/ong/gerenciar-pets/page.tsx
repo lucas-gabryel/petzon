@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react"; // Adicionado useState
+import React, { useState } from "react";
 import { useRouter } from "@/i18n/navigation";
 import {
   useGetUsuarioLogadoQuery,
@@ -10,9 +10,8 @@ import {
 import { useAppSelector } from "@/app/hooks/hooks";
 import { FiEdit, FiTrash2, FiPlusCircle } from "react-icons/fi";
 import { Pet } from "@/app/store/api/petsApi";
-import PetFormModal from "@/app/components/admin/PetFormModal"; // Importe o novo componente
+import PetFormModal from "@/app/components/admin/PetFormModal";
 
-// Componente principal da página
 export default function GerenciarPetsPage() {
   const router = useRouter();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -28,7 +27,6 @@ export default function GerenciarPetsPage() {
   });
   const [deletePet] = useDeletePetMutation();
 
-  // Proteção da rota
   React.useEffect(() => {
     if (
       !isLoadingUser &&
@@ -68,7 +66,6 @@ export default function GerenciarPetsPage() {
     );
   }
 
-  // Renderiza a página apenas se for admin
   if (usuarioLogado?.cargos.includes("ROLE_ONG")) {
     return (
       <>

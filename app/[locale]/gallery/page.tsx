@@ -12,15 +12,15 @@ export default function Gallery() {
   const t = useTranslations("gallery");
   const navT = useTranslations("nav");
   const [selectedPetType, setSelectedPetType] = useState<PetType>("gato");
-  const [page, setPage] = useState(0); // Estado para controlar a página atual
+  const [page, setPage] = useState(0);
 
   const { data, error, isLoading } = useGetPetsQuery({
     tipo: selectedPetType,
     page: page,
-    size: 8, // Quantos pets por página
+    size: 8,
   });
 
-  const pets = data?.content; // Os pets agora estão dentro da propriedade 'content'
+  const pets = data?.content;
   const totalPages = data?.totalPages || 0;
 
   const handlePreviousPage = () => {
@@ -55,9 +55,6 @@ export default function Gallery() {
     }
 
     return pets.map((pet: Pet) => {
-      // *** A CORREÇÃO ESTÁ AQUI ***
-      // Removemos a linha que adicionava o prefixo.
-      // Agora usamos a URL completa do S3 que vem da API.
       const imageUrl = pet.urlFoto;
 
       const detailLink = `/gallery/${pet.tipo.toLowerCase()}/${pet.id}`;
@@ -66,7 +63,7 @@ export default function Gallery() {
         <div key={pet.id} className="flex justify-center">
           <MultiActionAreaCard
             id={String(pet.id)}
-            image={imageUrl} // Passando a URL correta
+            image={imageUrl}
             alt={pet.nome}
             title={pet.nome}
             description={pet.descricao}
@@ -88,7 +85,7 @@ export default function Gallery() {
             <button
               onClick={() => {
                 setSelectedPetType("gato");
-                setPage(0); // Reseta a página ao trocar de tipo
+                setPage(0);
               }}
               className={`${baseButtonClass} ${
                 selectedPetType === "gato"
@@ -101,7 +98,7 @@ export default function Gallery() {
             <button
               onClick={() => {
                 setSelectedPetType("cachorro");
-                setPage(0); // Reseta a página ao trocar de tipo
+                setPage(0);
               }}
               className={`${baseButtonClass} ${
                 selectedPetType === "cachorro"

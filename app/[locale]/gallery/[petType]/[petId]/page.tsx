@@ -97,7 +97,6 @@ export default function PetDetailPage() {
         </div>
       </main>
 
-      {/* Lógica do Chat Bubble */}
       {isAuthenticated &&
         currentUser?.idUsuario !== pet.responsavel?.idUsuario && (
           <div className="fixed bottom-6 right-6 z-50">
