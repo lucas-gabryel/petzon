@@ -13,13 +13,15 @@ import { FiX } from "react-icons/fi";
 
 interface PrivateChatWindowProps {
   conversationId: string;
-  petId: string; // <-- ADICIONE ESTA LINHA
+  petId: string;
   chatPartnerName: string;
   onClose: () => void;
 }
 
 export default function PrivateChatWindow({
   conversationId,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  petId,
   chatPartnerName,
   onClose,
 }: PrivateChatWindowProps) {
@@ -32,36 +34,35 @@ export default function PrivateChatWindow({
 
   const token = useAppSelector((state) => state.auth.token);
   const { data: currentUser } = useGetUsuarioLogadoQuery();
-  const { data: history = [], refetch: refetchHistory } =
+  // isFetching nos diz se a query está buscando dados no momento
+  const { data: history = [], isFetching: isHistoryFetching } =
     useGetChatHistoryQuery(conversationId);
 
-  // Efeito para carregar o histórico e definir o parceiro de chat
+  // Efeito 1: Para carregar o histórico e definir o parceiro de chat.
+  // Roda apenas quando o histórico (do cache ou da rede) muda.
   useEffect(() => {
-    // Força a busca do histórico mais recente para esta conversa
-    refetchHistory();
-    setMessages(history);
+    // Só atualiza o estado se a busca não estiver em andamento
+    if (!isHistoryFetching) {
+      setMessages(history);
 
-    if (history.length > 0 && currentUser) {
-      const firstMessage = history[0];
-      const partnerId =
-        firstMessage.sender.idUsuario === currentUser.idUsuario
-          ? firstMessage.recipient.idUsuario
-          : firstMessage.sender.idUsuario;
-      setChatPartnerId(partnerId);
-    } else {
-      // Se não tem histórico, o parceiro é o outro ID na conversationId
-      const ids = conversationId.split("-").map(Number);
-      const partner = ids.find((id) => id !== currentUser?.idUsuario);
-      setChatPartnerId(partner || null);
+      if (history.length > 0 && currentUser) {
+        const firstMessage = history[0];
+        const partner =
+          firstMessage.sender.idUsuario === currentUser.idUsuario
+            ? firstMessage.recipient.idUsuario
+            : firstMessage.sender.idUsuario;
+        setChatPartnerId(partner);
+      } else if (currentUser) {
+        // Fallback se não houver histórico: tenta deduzir o parceiro pelo ID da conversa
+        const ids = conversationId.split("-").map(Number);
+        const partner = ids.find((id) => id !== currentUser.idUsuario);
+        setChatPartnerId(partner || null);
+      }
     }
-  }, [conversationId, history, currentUser, refetchHistory]);
+  }, [history, currentUser, conversationId, isHistoryFetching]);
 
-  // Efeito para rolar para a última mensagem
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
-
-  // Efeito de conexão WebSocket
+  // Efeito 2: Para conectar ao WebSocket e escutar por novas mensagens.
+  // Roda apenas quando a autenticação ou a conversa mudam.
   useEffect(() => {
     if (!token || !currentUser) return;
 
@@ -72,12 +73,14 @@ export default function PrivateChatWindow({
     });
 
     client.onConnect = () => {
+      // Se inscreve na fila privada para RECEBER novas mensagens
       client.subscribe(
         `/user/${currentUser.email}/queue/messages`,
         (message: IMessage) => {
           const receivedMessage: ChatMessage = JSON.parse(message.body);
+          // Adiciona a nova mensagem apenas se pertencer a esta conversa
           if (receivedMessage.conversationId === conversationId) {
-            setMessages((prev) => [...prev, receivedMessage]);
+            setMessages((prevMessages) => [...prevMessages, receivedMessage]);
           }
         }
       );
@@ -86,14 +89,20 @@ export default function PrivateChatWindow({
     client.activate();
     stompClient.current = client;
 
+    // Função de limpeza para desconectar ao sair do componente
     return () => {
       client.deactivate();
     };
   }, [token, currentUser, conversationId]);
 
+  // Efeito 3: Para rolar a tela para a última mensagem.
+  // Roda sempre que a lista de mensagens é atualizada.
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
   const sendMessage = () => {
     if (input.trim() && stompClient.current?.active && currentUser) {
-      // O ID do destinatário é sempre o do parceiro de chat
       if (!chatPartnerId) {
         alert("Não foi possível identificar o destinatário da conversa.");
         return;
@@ -113,18 +122,17 @@ export default function PrivateChatWindow({
   };
 
   return (
-    // O container agora é flexível para preencher o espaço que receber
-    <div className="w-full h-full bg-white flex flex-col shadow-lg">
-      <div className="bg-purple-800 text-white p-4 flex justify-between items-center">
+    <div className="w-full h-full bg-white flex flex-col shadow-lg rounded-lg">
+      <div className="bg-purple-800 text-white p-4 flex justify-between items-center rounded-t-lg">
         <h3 className="font-bold text-lg">Conversa com {chatPartnerName}</h3>
         <button onClick={onClose} className="hover:text-yellow-300">
           <FiX size={24} />
         </button>
       </div>
       <div className="flex-1 p-4 overflow-y-auto bg-gray-100">
-        {messages.map((msg, index) => (
+        {messages.map((msg) => (
           <div
-            key={index}
+            key={msg.id}
             className={`flex mb-3 ${
               msg.sender.idUsuario === currentUser?.idUsuario
                 ? "justify-end"

@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "@/i18n/navigation";
 import {
   useGetUsuarioLogadoQuery,
-  useGetAdminConversationsQuery,
+  useGetOngConversationsQuery,
 } from "@/app/store/api/petsApi";
 import { useAppSelector } from "@/app/hooks/hooks";
 import type { ConversationSummary } from "@/app/store/api/petsApi";
@@ -19,7 +19,7 @@ export default function AdminChatDashboard() {
     });
 
   const { data: conversations, isLoading: isLoadingConversations } =
-    useGetAdminConversationsQuery(undefined, {
+    useGetOngConversationsQuery(undefined, {
       // Adicionando polling para atualizar a lista de conversas a cada 30 segundos
       pollingInterval: 30000,
     });
@@ -30,7 +30,7 @@ export default function AdminChatDashboard() {
   useEffect(() => {
     if (
       !isLoadingUser &&
-      (!isAuthenticated || !usuarioLogado?.cargos.includes("ROLE_ADMIN"))
+      (!isAuthenticated || !usuarioLogado?.cargos.includes("ROLE_ONG"))
     ) {
       router.replace("/");
     }
@@ -46,7 +46,7 @@ export default function AdminChatDashboard() {
     );
   }
 
-  if (isAuthenticated && usuarioLogado?.cargos.includes("ROLE_ADMIN")) {
+  if (isAuthenticated && usuarioLogado?.cargos.includes("ROLE_ONG")) {
     return (
       <main className="flex h-[calc(100vh-68px)]">
         {/* Coluna da Lista de Conversas (Esquerda) */}

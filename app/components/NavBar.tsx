@@ -72,54 +72,53 @@ export default function NavBar() {
 
   const renderAuthSection = () => {
     if (isAuthenticated && usuarioLogado) {
-      // Adicionamos a ref ao container e removemos o onMouseLeave
+      const isAdmin = usuarioLogado.cargos.includes("ROLE_ADMIN");
+      const isOng = usuarioLogado.cargos.includes("ROLE_ONG");
+
       return (
         <div className="relative" ref={dropdownRef}>
-          <button
-            onClick={() => setDropdownOpen((prev) => !prev)}
-            className="flex items-center gap-2 cursor-pointer hover:text-yellow-300"
-          >
+          <button onClick={() => setDropdownOpen((prev) => !prev)} /*...*/>
             <FiUser size={20} />
             <span className="font-medium">{usuarioLogado.nome}</span>
           </button>
 
-          {/* Menu Dropdown */}
           {dropdownOpen && (
-            <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 text-black">
-              <Link
-                href="/perfil" // Link para uma futura página de perfil
-                className="block px-4 py-2 text-sm text-gray-700 hover:bg-purple-100"
-                onClick={() => setDropdownOpen(false)}
-              >
-                Meu Perfil
-              </Link>
+            <div className="absolute right-0 mt-2 w-56 bg-white rounded-md shadow-lg py-1 z-50 text-black">
+              <Link href="/perfil" /*...*/>Meu Perfil</Link>
 
-              {/* *** NOVO TRECHO ADICIONADO AQUI *** */}
-              {/* Verifica se o array de cargos inclui ROLE_ADMIN */}
-              {usuarioLogado.cargos.includes("ROLE_ADMIN") && (
+              {/* Links para ONG */}
+              {isOng && (
                 <>
                   <Link
-                    href="/admin/gerenciar-pets"
-                    className="block px-4 py-2 text-sm text-purple-700 font-bold hover:bg-purple-100"
+                    href="/ong/gerenciar-pets"
+                    className="block px-4 py-2 text-sm text-purple-700 font-semibold hover:bg-purple-100"
                     onClick={() => setDropdownOpen(false)}
                   >
-                    Gerenciar Pets
+                    Gerenciar Meus Pets
                   </Link>
                   <Link
-                    href="/admin/chat-dashboard"
-                    className="block px-4 py-2 text-sm text-purple-700 font-bold hover:bg-purple-100"
+                    href="/ong/chat-dashboard"
+                    className="block px-4 py-2 text-sm text-purple-700 font-semibold hover:bg-purple-100"
                     onClick={() => setDropdownOpen(false)}
                   >
-                    Chat Admin
+                    Dashboard de Chat
                   </Link>
                 </>
               )}
-              {/* *** FIM DO NOVO TRECHO *** */}
 
-              <button
-                onClick={handleLogout}
-                className="w-full text-left flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50"
-              >
+              {/* Links para ADMIN */}
+              {isAdmin && (
+                <Link
+                  href="/admin/gerenciar-usuarios"
+                  className="block px-4 py-2 text-sm text-red-700 font-semibold hover:bg-red-100"
+                  onClick={() => setDropdownOpen(false)}
+                >
+                  Gerenciar Usuários
+                </Link>
+              )}
+
+              <div className="border-t my-1 border-gray-100"></div>
+              <button onClick={handleLogout} /*...*/>
                 <FiLogOut />
                 <span>Logout</span>
               </button>

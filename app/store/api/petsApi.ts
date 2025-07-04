@@ -62,6 +62,13 @@ export interface UsuarioLogado {
   cargos: string[];
 }
 
+export interface Usuario {
+  idUsuario: number;
+  nome: string;
+  email: string;
+  cargos: string[];
+}
+
 export interface ConversationSummary {
   conversationId: string;
   petNome: string;
@@ -83,7 +90,7 @@ export const petsApi = createApi({
       return headers;
     },
   }),
-  tagTypes: ["Pet", "Chat", "ChatConversations"],
+  tagTypes: ["Pet", "Chat", "ChatConversations", "Users"],
   endpoints: (builder) => ({
     // Adicionar Mutations de Autenticação
     login: builder.mutation<TokenResponse, LoginRequest>({
@@ -107,8 +114,8 @@ export const petsApi = createApi({
       query: (conversationId) => `chat/history/${conversationId}`,
       providesTags: ["Chat"], // Adicione uma tag para o chat
     }),
-    getAdminConversations: builder.query<ConversationSummary[], void>({
-      query: () => `admin/chat/conversations`,
+    getOngConversations: builder.query<ConversationSummary[], void>({
+      query: () => `ong/chat/conversations`, // Nova URL
       providesTags: ["ChatConversations"],
     }),
     // Atualizar a query de getPets para lidar com paginação
@@ -133,6 +140,28 @@ export const petsApi = createApi({
               { type: "Pet", id: "LIST" },
             ]
           : [{ type: "Pet", id: "LIST" }],
+    }),
+
+    getUsers: builder.query<Usuario[], void>({
+      query: () => "admin/usuarios",
+      providesTags: (result) =>
+        result
+          ? [
+              ...result.map(({ idUsuario }) => ({
+                type: "Users" as const,
+                id: idUsuario,
+              })),
+              { type: "Users", id: "LIST" },
+            ]
+          : [{ type: "Users", id: "LIST" }],
+    }),
+
+    promoteToOng: builder.mutation<Usuario, number>({
+      query: (userId) => ({
+        url: `admin/usuarios/${userId}/promover-ong`,
+        method: "PUT",
+      }),
+      invalidatesTags: (_result, _error, id) => [{ type: "Users", id }],
     }),
 
     getPetById: builder.query<Pet, string>({
@@ -191,5 +220,7 @@ export const {
   useAddPetMutation,
   useUpdatePetMutation,
   useDeletePetMutation,
-  useGetAdminConversationsQuery,
+  useGetOngConversationsQuery, // Hook renomeado
+  useGetUsersQuery, // Novo hook
+  usePromoteToOngMutation,
 } = petsApi;

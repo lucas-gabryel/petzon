@@ -32,7 +32,7 @@ export default function GerenciarPetsPage() {
   React.useEffect(() => {
     if (
       !isLoadingUser &&
-      (!isAuthenticated || !usuarioLogado?.cargos.includes("ROLE_ADMIN"))
+      (!isAuthenticated || !usuarioLogado?.cargos.includes("ROLE_ONG"))
     ) {
       router.replace("/");
     }
@@ -69,7 +69,7 @@ export default function GerenciarPetsPage() {
   }
 
   // Renderiza a página apenas se for admin
-  if (usuarioLogado?.cargos.includes("ROLE_ADMIN")) {
+  if (usuarioLogado?.cargos.includes("ROLE_ONG")) {
     return (
       <>
         {isModalOpen && (
