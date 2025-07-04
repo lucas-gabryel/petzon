@@ -11,6 +11,13 @@ export interface Page<T> {
 }
 
 // Interface do Pet (pode manter a mesma)
+interface Responsavel {
+  idUsuario: number;
+  nome: string;
+  email: string;
+}
+
+// ATUALIZE A INTERFACE PET AQUI
 export interface Pet {
   id: number;
   tipo: "CACHORRO" | "GATO";
@@ -19,6 +26,7 @@ export interface Pet {
   descricao: string;
   idade: number;
   urlFoto: string;
+  responsavel?: Responsavel; // <-- CAMPO ADICIONADO AQUI
 }
 
 export interface PetCadastroDto {
