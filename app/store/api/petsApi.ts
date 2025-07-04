@@ -89,7 +89,7 @@ export const petsApi = createApi({
   reducerPath: "petsApi",
   // Modifica a baseQuery para incluir o token dinamicamente
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:8080/api/",
+    baseUrl: `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/`,
     prepareHeaders: (headers, { getState }) => {
       const token = (getState() as RootState).auth.token;
       if (token) {

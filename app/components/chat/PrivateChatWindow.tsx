@@ -64,7 +64,8 @@ export default function PrivateChatWindow({
   useEffect(() => {
     if (!token || !currentUser) return;
     const client = new Client({
-      webSocketFactory: () => new SockJS("http://localhost:8080/ws"),
+      webSocketFactory: () =>
+        new SockJS(`${process.env.NEXT_PUBLIC_API_BASE_URL}/ws`),
       connectHeaders: { Authorization: `${token}` },
       reconnectDelay: 5000,
     });
